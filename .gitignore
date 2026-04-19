@@ -205,3 +205,15 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Ignore the giant quarterly raw DB1B CSVs
+raw_db1b/DB1B_*.csv
+
+# Ignore Mac system junk
+.DS_Store
+
+# Ensure the DB1B file combiner script is tracked
+!raw_db1b/file_merger.py
+
+# Ensure the final output and T100 are tracked
+!datasets/*.csv
