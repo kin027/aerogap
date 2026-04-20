@@ -10,10 +10,10 @@ origin_airport_upper = origin_airport.upper()
 DB1B_df = pd.read_csv("final_datasets/DB1B_2024_consolidated.csv")
 
 # Convert the series of origin airports to a set
-origin_airports_list = set(DB1B_df.ORIGIN)
+origin_airports_set = set(DB1B_df.ORIGIN)
 
 # Perform input validation based on this list
-if origin_airport_upper in origin_airports_list:
+if origin_airport_upper in origin_airports_set:
     # Filter DB1B_df down to rows where origin airport is same as user input
     filtered_DB1B_df = DB1B_df[DB1B_df.ORIGIN == origin_airport_upper]
 
