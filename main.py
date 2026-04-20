@@ -9,11 +9,8 @@ origin_airport_upper = origin_airport.upper()
 # Read consolidated DB1B CSV file with pandas
 DB1B_df = pd.read_csv("final_datasets/DB1B_2024_consolidated.csv")
 
-# Get all ORIGIN airports as a Series and drop duplicates
-origin_airports_series = DB1B_df.ORIGIN.drop_duplicates()
-
-# Convert this Series to a list
-origin_airports_list = origin_airports_series.to_list()
+# Convert the series of origin airports to a set
+origin_airports_list = set(DB1B_df.ORIGIN)
 
 # Perform input validation based on this list
 if origin_airport_upper in origin_airports_list:
