@@ -30,12 +30,9 @@ if origin_airport_upper in origin_airports_set:
     # flights)
     filtered_T100_df = T100_df[(T100_df.ORIGIN == origin_airport_upper) & (T100_df.PASSENGERS > 0)]
 
-    # Create a new series of boolean values that indicate whether a route has a nonstop flight by cross-checking with
-    # T100_df, which indicates whether a nonstop flight exists
-    has_nonstop_series = filtered_DB1B_df["DEST"].isin(filtered_T100_df["DEST"])
-
-    # Create new column in filtered_DB1B_df that pastes this series
-    filtered_DB1B_df["has_nonstop_flight"] = has_nonstop_series
+    # Create a new column of boolean values in filtered_DB1B_df that indicates whether a route has a nonstop flight
+    # by cross-checking with T100_df, which indicates whether a nonstop flight exists
+    filtered_DB1B_df["has_nonstop_flight"] = filtered_DB1B_df["DEST"].isin(filtered_T100_df["DEST"])
 
     # Filter filtered_DB1B_df down to rows where "has_nonstop_flight" is false
     filtered_DB1B_df_2 = filtered_DB1B_df[filtered_DB1B_df["has_nonstop_flight"] == False]
