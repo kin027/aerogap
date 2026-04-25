@@ -6,7 +6,7 @@ Hi, avgeek (aviation enthusiast) and someone curious to explore passenger flows 
 
 This program analyzes 2024 Bureau of Transportation Statistics data (from the U.S. government) to identify the most popular destination airports from a user-entered origin airport that are not served by a nonstop flight
 
-I was intrigued by some of the results after running this analysis on a bunch of airports, especially my home airports, leading me to try to figure out why there isn't a nonstop flight between ABQ and LGA (well that one's pretty easy... see [LaGuardia Airport's perimeter rule](https://en.wikipedia.org/wiki/LaGuardia_Airport#:~:text=Also%20in%201984%2C%20to%20further%20combat%20overcrowding,became%20the%20only%20exception%20to%20the%20rule.))
+I was intrigued by some of the results after running this analysis on a bunch of airports, especially my home airports, leading me to try to figure out why there isn't a nonstop flight between ABQ and LGA (well that one's pretty easy; see [LaGuardia Airport's perimeter rule](https://en.wikipedia.org/wiki/LaGuardia_Airport#:~:text=Also%20in%201984%2C%20to%20further%20combat%20overcrowding,became%20the%20only%20exception%20to%20the%20rule.))
 
 Anyway, have fun trying this out with your home airport!
 
