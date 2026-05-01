@@ -2,7 +2,7 @@
 
 ## Overview
 
-Hi, avgeek (aviation enthusiast) here! I built this tool to identify hidden markets in the U.S. commercial aviation network. ✈️
+Hi, avgeek (aviation enthusiast) here! I built this tool to identify popular unserved flight routes in the U.S. commercial aviation network. ✈️
 
 ### What this does
 
@@ -16,7 +16,7 @@ I've always been fascinated in airline route networks and passenger flows across
 
 Running this analysis on my home airports revealed interesting hidden markets I hadn't considered. Without this, I never would've known that the top unserved airport from ABQ is LGA, where, in 2024, over 38,000 passengers connected to reach the Big Apple. (Though as any enthusiast knows, [LaGuardia's perimeter rule](https://en.wikipedia.org/wiki/LaGuardia_Airport#:~:text=Also%20in%201984%2C%20to%20further%20combat%20overcrowding,became%20the%20only%20exception%20to%20the%20rule.) prevents nonstop service from existing, at least on six days of the week.)
 
-**Give it a test flight with your home airport to see what hidden markets you find!**
+**Give it a test flight with your home airport to see what popular unserved flight routes you find!**
 
 ## Data Sources
 
