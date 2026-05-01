@@ -1,14 +1,22 @@
-# Popular Unserved Routes
+# Popular Unserved Flight Routes
 
 ## Overview
 
-Hi, avgeek (aviation enthusiast) and someone curious to explore passenger flows on flights throughout the U.S. here :D
+Hi, avgeek (aviation enthusiast) here! I built this tool to identify hidden markets in the U.S. commercial aviation network. ✈️
 
-This program analyzes 2024 Bureau of Transportation Statistics data (from the U.S. government) to identify the most popular destination airports from a user-entered origin airport that are not served by a nonstop flight
+### What it does
 
-I was intrigued by some of the results after running this analysis on a bunch of airports, especially my home airports, leading me to try to figure out why there isn't a nonstop flight between ABQ and LGA (well that one's pretty easy; see [LaGuardia Airport's perimeter rule](https://en.wikipedia.org/wiki/LaGuardia_Airport#:~:text=Also%20in%201984%2C%20to%20further%20combat%20overcrowding,became%20the%20only%20exception%20to%20the%20rule.))
+This rather simple project analyzes 2024 Bureau of Transportation Statistics data (from the U.S. government) to identify the most popular destination airports from a user-entered origin airport that lack nonstop flights.
 
-Anyway, have fun trying this out with your home airport!
+### Why I made this
+
+I've always been fascinated in airline route networks and passenger flows across the system, especially where those two do not align. While passengers might connect for price, schedule, or to [visit ORD for fun, like I did](https://my.flightradar24.com/kin_on_a_plane), popular airport pairs without nonstop service _may_ present an important market opportunity. (Of course, the passenger count is just one of many factors in network planning.)
+
+### What I learned from this
+
+Running this analysis on my home airports yielded interesting insights I never knew before, leading me to further search why nonstop flights don't exist. For example, ABQ-LGA shows huge passenger demand but zero nonstops. (Well that one's pretty easy if you know [LaGuardia Airport's perimeter rule](https://en.wikipedia.org/wiki/LaGuardia_Airport#:~:text=Also%20in%201984%2C%20to%20further%20combat%20overcrowding,became%20the%20only%20exception%20to%20the%20rule.).)
+
+**Give it a test flight with your home airport to see what hidden markets you find!**
 
 ## Data Sources
 
@@ -17,7 +25,7 @@ Anyway, have fun trying this out with your home airport!
 
 
 - [BTS T-100 Domestic Segment table for all of 2024](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EEE)
-  - For finding airport pairs connected with a nonstop flight
+  - For identifying airport pairs connected with a nonstop flight
 
 ## Tools
 
@@ -29,7 +37,7 @@ Anyway, have fun trying this out with your home airport!
 
 - matplotlib
 
-This is kind of a rudimentary program at the moment, but I have some ideas for expansion
+This is kind of a rudimentary program at the moment, but I have some ideas for expansion.
 
 Speaking of which...
 
@@ -45,20 +53,26 @@ Speaking of which...
 
 ## Limitations
 
-Obviously there are some limitations that come out of analyzing only two datasets...
+Obviously there are some limitations that come out of analyzing only two datasets:
+
+- You should probably be cautious with using solely this analysis to determine whether an airline to start new routes because the number of passengers traveling between two airports is just one piece of the network planning puzzle
+  - Also must consider fares, _premium_ demand, seasonality, operational constraints, aircraft availability, etc.
+
 
 - The data is not real-time; it comes from BTS data tables that the government releases only once a quarter
 
 
-- This analyzes 2024 data because that is the most recent year with a full year of data
+- 2024 data is analyzed because that is the most recent year with a full year of data
   - There's a 6-month delay for when the government makes the DB1B tables available to the public
 
+
+- The exact passenger count is unknown because the DB1B tables are only a random 10% sample of tickets, so the program multiplies DB1B numbers by 10 to approximate the actual count
+
     
-- This does not include any airport pairs with an airport outside the U.S. because the DB1B tables only have American airports
+- Routes with an airport outside the U.S. are excluded because the DB1B tables only have American airports
 
 
 - City pairs with seasonal flights are excluded because they will show up in the T-100 at some point for the year, even if flights are not operated during every month
 
 
-- You should probably be cautious with using solely this analysis to determine whether an airline to start new routes because the number of passengers traveling between two airports is just one piece of the network planning puzzle
-  - Also must consider _fares_, premium demand, seasonality, operational constraints, aircraft availability, etc.
+- Airports with no scheduled, commercial service in 2024 but _may_ have demand are excluded because it's not possible to book a flight out of those airports (and have a record on DB1B tables)
