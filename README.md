@@ -4,17 +4,17 @@
 
 Hi, avgeek (aviation enthusiast) here! I built this tool to identify hidden markets in the U.S. commercial aviation network. ✈️
 
-### What it does
+### What this does
 
 This rather simple project analyzes 2024 Bureau of Transportation Statistics data (from the U.S. government) to identify the most popular destination airports from a user-entered origin airport that lack nonstop flights.
 
 ### Why I made this
 
-I've always been fascinated in airline route networks and passenger flows across the system, especially where those two do not align. While passengers might connect for price, schedule, or to [visit ORD for fun, like I did](https://my.flightradar24.com/kin_on_a_plane), popular airport pairs without nonstop service _may_ present an important market opportunity. (Of course, the passenger count is just one of many factors in network planning.)
+I've always been fascinated in airline route networks and passenger flows across the system, especially where they do not align. While passengers might connect for price, schedule, or to [visit ORD for fun like I did](https://my.flightradar24.com/kin_on_a_plane), popular airport pairs without nonstop service _may_ present an important market opportunity. (Of course, the passenger count is just one of many factors in network planning.)
 
 ### What I learned from this
 
-Running this analysis on my home airports yielded interesting insights I never knew before, leading me to further search why nonstop flights don't exist. For example, ABQ-LGA shows huge passenger demand but zero nonstops. (Well that one's pretty easy if you know [LaGuardia Airport's perimeter rule](https://en.wikipedia.org/wiki/LaGuardia_Airport#:~:text=Also%20in%201984%2C%20to%20further%20combat%20overcrowding,became%20the%20only%20exception%20to%20the%20rule.).)
+Running this analysis on my home airports revealed interesting hidden markets I hadn't considered. Without this, I never would've known that the top unserved airport from ABQ is LGA, where, in 2024, over 38,000 passengers connected to reach the Big Apple. (Though as any enthusiast knows, [LaGuardia's perimeter rule](https://en.wikipedia.org/wiki/LaGuardia_Airport#:~:text=Also%20in%201984%2C%20to%20further%20combat%20overcrowding,became%20the%20only%20exception%20to%20the%20rule.) prevents nonstop service from existing, at least on six days of the week.)
 
 **Give it a test flight with your home airport to see what hidden markets you find!**
 
@@ -55,7 +55,7 @@ Speaking of which...
 
 Obviously there are some limitations that come out of analyzing only two datasets:
 
-- You should probably be cautious with using solely this analysis to determine whether an airline to start new routes because the number of passengers traveling between two airports is just one piece of the network planning puzzle
+- You should probably be cautious with using solely this analysis to determine whether an airline should start new routes because the passenger count is just one piece of the network planning puzzle
   - Also must consider fares, _premium_ demand, seasonality, operational constraints, aircraft availability, etc.
 
 
