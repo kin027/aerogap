@@ -9,12 +9,12 @@ def main():
     origin_airport = input("Enter a three-character IATA airport code: ")
 
     # Convert user input to uppercase
-    origin_airport_upper = origin_airport.upper()
+    origin_airport = origin_airport.upper()
 
     # Create RoutesAnalyzer object
     analyzer = UnservedRoutesAnalyzer(DB1B_PATH, T100_PATH)
 
     # Call analyzer analyze_routes method
-    analyzer.analyze_unserved_routes(origin_airport_upper)
+    analyzer.analyze_unserved_routes(origin_airport)
 
 main()

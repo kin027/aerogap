@@ -1,5 +1,6 @@
 # Class for analyzing
 import pandas as pd
+import matplotlib.pyplot as plt
 
 class UnservedRoutesAnalyzer:
     def __init__(self, db1b_path, t100_path):
@@ -32,14 +33,22 @@ class UnservedRoutesAnalyzer:
 
         # Origin airport is validated, continue analyzing
 
+        # Clean datasets by dropping NA values (shouldn't be there anyway but always good to double-check)
+        self.DB1B_df.dropna(inplace = True)
+        self.T100_df.dropna(inplace = True)
+
         # Filter DB1B_df down to rows where origin airport is same as user input
         filtered_DB1B_df = self.DB1B_df[self.DB1B_df.ORIGIN == origin_airport].copy()
 
         # Create new column that multiplies passenger counts by 10, as DB1B is a 10% sample of tickets
-        filtered_DB1B_df["passengers_times_10"] = filtered_DB1B_df["PASSENGERS"] * 10
+        filtered_DB1B_df["PASSENGERS_TIMES_10"] = filtered_DB1B_df["PASSENGERS"] * 10
+
+        # Create new column that calculates the passengers daily by dividing the passengers_times_10 column by 365 and
+        # round to 2 decimal places
+        filtered_DB1B_df["PASSENGERS_DAILY"] = (filtered_DB1B_df["PASSENGERS_TIMES_10"] / 365).round(2)
 
         # Sort the df by passenger counts, highest to lowest, using merge sort
-        filtered_DB1B_df.sort_values(by="passengers_times_10", ascending=False, inplace=True, kind="mergesort")
+        filtered_DB1B_df.sort_values(by="PASSENGERS_TIMES_10", ascending=False, inplace=True, kind="mergesort")
 
         # Filter T100_df down to rows where origin airport is same as user input and passengers > 0 (as T100 contains cargo
         # flights)
@@ -47,14 +56,44 @@ class UnservedRoutesAnalyzer:
 
         # Create a new column of boolean values in filtered_DB1B_df that indicates whether a route has a nonstop flight
         # by cross-checking with T100_df, which indicates whether a nonstop flight exists
-        filtered_DB1B_df["has_nonstop_flight"] = filtered_DB1B_df["DEST"].isin(filtered_T100_df["DEST"])
+        filtered_DB1B_df["HAS_NONSTOP_FLIGHT"] = filtered_DB1B_df["DEST"].isin(filtered_T100_df["DEST"])
 
-        # Filter filtered_DB1B_df down to rows where "has_nonstop_flight" is false
-        filtered_DB1B_df_2 = filtered_DB1B_df[filtered_DB1B_df["has_nonstop_flight"] == False]
+        # Filter to routes without nonstop flights
+        filtered_DB1B_df = filtered_DB1B_df[filtered_DB1B_df["HAS_NONSTOP_FLIGHT"] == False]
 
-        # Print DB1B_df (for now)
-        print(filtered_DB1B_df_2)
+        # Grab first 10 rows
+        filtered_DB1B_df = filtered_DB1B_df.head(10)
+
+        # Print first 10 rows of DB1B_df (for now)
+        print(filtered_DB1B_df)
+
+        # Call create_bar_graph method
+        self.create_bar_graph(filtered_DB1B_df, origin_airport)
 
         # Done
         return
 
+    def create_bar_graph(self, df, origin_airport):
+        # Format graph
+        fig, ax = plt.subplots(figsize=(12, 8))
+
+        # Title and subtitle
+        ax.text(0, 1.14, f"Most Popular Unserved Routes from {origin_airport} in 2024",
+                transform=ax.transAxes, fontsize=24, va='top')
+        ax.text(0, 1.02, "Based on Bureau of Transportation Statistics (BTS) 2024 DB1B tables.\nParentheses under each count is the average count of daily passengers.", transform=ax.transAxes, fontsize=12, color='#a7a9ac', va='bottom')
+
+        # Labels
+        plt.xlabel("Destination Airport", labelpad = 10, fontsize = 18)
+        plt.ylabel("Passengers", labelpad = 10, fontsize=18)
+        plt.xticks(fontsize = 12)
+        plt.yticks(fontsize=12)
+        plt.ylim(0, df["PASSENGERS_TIMES_10"].max() * 1.1)
+
+        # Create basic graph
+        graph = plt.bar(df.DEST, df.PASSENGERS_TIMES_10, color = '#0039a6')
+        bar_labels = df["PASSENGERS_TIMES_10"].astype(str).str.cat("\n(" + df["PASSENGERS_DAILY"].astype(str) + ")")
+        plt.bar_label(graph, df.PASSENGERS_TIMES_10.map(int).astype(str) + "\n(" + df.PASSENGERS_DAILY.map(float).astype(str) + ")", label_type="center", padding=2, color="w", fontsize=12)
+
+        # Show graph
+        plt.tight_layout()
+        plt.show()
