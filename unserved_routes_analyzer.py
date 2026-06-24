@@ -50,8 +50,8 @@ class UnservedRoutesAnalyzer:
         # Sort the df by passenger counts, highest to lowest, using merge sort
         filtered_DB1B_df.sort_values(by="PASSENGERS_TIMES_10", ascending=False, inplace=True, kind="mergesort")
 
-        # Filter T100_df down to rows where origin airport is same as user input and passengers > 0 (as T100 contains cargo
-        # flights)
+        # Filter T100_df down to rows where origin airport is same as user input and passengers > 0 (as T100 contains
+        # cargo flights)
         filtered_T100_df = self.T100_df[(self.T100_df.ORIGIN == origin_airport) & (self.T100_df.PASSENGERS > 0)]
 
         # Create a new column of boolean values in filtered_DB1B_df that indicates whether a route has a nonstop flight
@@ -75,25 +75,31 @@ class UnservedRoutesAnalyzer:
 
     def create_bar_graph(self, df, origin_airport):
         # Format graph
-        fig, ax = plt.subplots(figsize=(12, 8))
+        fig, ax = plt.subplots(figsize = (12, 8))
 
         # Title and subtitle
         ax.text(0, 1.14, f"Most Popular Unserved Routes from {origin_airport} in 2024",
-                transform=ax.transAxes, fontsize=24, va='top')
-        ax.text(0, 1.02, "Based on Bureau of Transportation Statistics (BTS) 2024 DB1B tables.\nParentheses under each count is the average count of daily passengers.", transform=ax.transAxes, fontsize=12, color='#a7a9ac', va='bottom')
+                transform = ax.transAxes, fontsize = 24, va = 'top')
+        ax.text(0, 1.02, "Based on Bureau of Transportation Statistics (BTS) 2024 DB1B tables.\nParentheses under each "
+                         "count is the average daily passenger count. A Boeing 737-800 seats around 160 passengers.",
+                transform = ax.transAxes, fontsize = 12, color = '#a7a9ac', va = 'bottom')
 
-        # Labels
-        plt.xlabel("Destination Airport", labelpad = 10, fontsize = 18)
-        plt.ylabel("Passengers", labelpad = 10, fontsize=18)
+        # Labels and scale
+        plt.xlabel("Destination Airport", labelpad = 20, fontsize = 18)
+        plt.ylabel("Passengers", labelpad = 20, fontsize=18)
         plt.xticks(fontsize = 12)
-        plt.yticks(fontsize=12)
+        plt.yticks(fontsize = 12)
         plt.ylim(0, df["PASSENGERS_TIMES_10"].max() * 1.1)
 
-        # Create basic graph
+        # Create graph
         graph = plt.bar(df.DEST, df.PASSENGERS_TIMES_10, color = '#0039a6')
         bar_labels = df["PASSENGERS_TIMES_10"].astype(str).str.cat("\n(" + df["PASSENGERS_DAILY"].astype(str) + ")")
-        plt.bar_label(graph, df.PASSENGERS_TIMES_10.map(int).astype(str) + "\n(" + df.PASSENGERS_DAILY.map(float).astype(str) + ")", label_type="center", padding=2, color="w", fontsize=12)
+        plt.bar_label(graph, df.PASSENGERS_TIMES_10.map(int).astype(str) + "\n(" +
+                      df.PASSENGERS_DAILY.map(float).astype(str) + ")", label_type  = "center", padding = 2,
+                      color = "w", fontsize = 12)
 
         # Show graph
         plt.tight_layout()
         plt.show()
+
+        return

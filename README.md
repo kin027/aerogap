@@ -45,12 +45,6 @@ Speaking of which...
 
 - Allowing the graph to show both served and unserved routes with a color-coded bar chart
 
-
-- Providing an option to save an image of the graph made
-
-
-- Moving this out of the console... maybe
-
 ## Limitations
 
 Obviously there are some limitations that come out of analyzing only two datasets:
