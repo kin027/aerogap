@@ -78,7 +78,8 @@ class UnservedRoutesAnalyzer:
         fig, ax = plt.subplots(figsize = (12, 8))
 
         # Title and subtitle
-        ax.text(0, 1.14, f"Most Popular Unserved Routes from {origin_airport} in 2024",
+        TITLE = f"Most Popular Unserved Routes from {origin_airport} in 2024"
+        ax.text(0, 1.14, TITLE,
                 transform = ax.transAxes, fontsize = 24, va = 'top')
         ax.text(0, 1.02, "Based on Bureau of Transportation Statistics (BTS) 2024 DB1B tables.\nIn parentheses under "
                          "each count is the average daily passenger count. A Boeing 737-800 seats around 160 "
@@ -91,6 +92,9 @@ class UnservedRoutesAnalyzer:
         plt.xticks(fontsize = 12)
         plt.yticks(fontsize = 12)
         plt.ylim(0, df["PASSENGERS_TIMES_10"].max() * 1.1)
+
+        # Change window title
+        fig.canvas.manager.set_window_title(TITLE)
 
         # Create graph
         graph = plt.bar(df.DEST, df.PASSENGERS_TIMES_10, color = '#0039a6')
