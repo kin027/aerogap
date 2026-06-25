@@ -23,8 +23,6 @@ Note for Linux users: You may need to install Tkinter manually if it isn't inclu
 sudo apt-get install python3-tk
 ```
 
-Follow these steps to set up and run the Popular Unserved Flight Routes Analyzer on your local machine:
-
 1. Clone this repository:
 ```bash
 git clone https://github.com/kin027/popular-unserved-flight-routes.git)
@@ -57,12 +55,10 @@ python main.py
 
 ## Data Sources
 
-- [BTS DB1B Market table for quarters 1-4 of 2024](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EFI&Yv0x=D)
-  -  For passenger flow data
+- [BTS DB1B Market table for quarters 1-4 of 2024](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EFI&Yv0x=D) (for passenger flow data)
 
 
-- [BTS T-100 Domestic Segment table for all of 2024](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EEE)
-  - For identifying airport pairs connected with a nonstop flight
+- [BTS T-100 Domestic Segment table for all of 2024](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EEE) (for identifying airport pairs connected with a nonstop flight)
 
 ## Tools
 
@@ -78,24 +74,24 @@ python main.py
 
 Obviously there are some limitations that come out of analyzing only two datasets:
 
-- You should probably be cautious with using solely this analysis to determine whether an airline should start new routes because the passenger count is just one piece of the network planning puzzle
+- You should probably be cautious with using solely this analysis to determine whether an airline should start new routes because the passenger count is just one piece of the network planning puzzle.
   - Also must consider fares, _premium_ demand, seasonality, operational constraints, aircraft availability, etc.
 
 
-- The data is not real-time; it comes from BTS data tables that the government releases only once a quarter
+- The data is not real-time; it comes from BTS data tables that the government releases only once a quarter.
 
 
-- 2024 data is analyzed because that is the most recent year with a full year of data
-  - There's a 6-month delay for when the government makes the DB1B tables available to the public
+- 2024 data is analyzed because that is the most recent year with a full year of data.
+  - There's a 6-month delay for when the government makes the DB1B tables available to the public.
 
 
-- The exact passenger count is unknown because the DB1B tables are only a random 10% sample of tickets, so DB1B counts are multiplied by 10 to approximate the actual count
+- The exact passenger count is unknown because the DB1B tables are only a random 10% sample of tickets, so DB1B counts are multiplied by 10 to approximate the actual count.
 
     
-- Routes with an airport outside the U.S. are excluded because the DB1B tables only have American airports
+- Routes with an airport outside the U.S. are excluded because the DB1B tables only have American airports.
 
 
-- City pairs with seasonal flights are excluded because they will show up in the T-100 at some point for the year, even if flights are not operated during every month
+- City pairs with seasonal flights are excluded because they will show up in the T-100 at some point for the year, even if flights are not operated during every month.
 
 
-- Airports with no scheduled, commercial service in 2024 but _may_ have demand are excluded because it's not possible to book a flight out of those airports (and have a record on DB1B tables)
+- Airports with no scheduled, commercial service in 2024 but _may_ have demand are excluded because it's not possible to book a flight out of those airports (and have a record on DB1B tables).
