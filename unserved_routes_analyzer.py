@@ -5,6 +5,8 @@ import tkinter
 from tkinter import simpledialog
 from tkinter import messagebox
 
+TITLE = "Popular Unserved Flight Routes"
+
 class UnservedRoutesAnalyzer:
     def __init__(self, db1b_path, t100_path):
         # Read both DB1B and T-100 CSVs first
@@ -21,7 +23,7 @@ class UnservedRoutesAnalyzer:
         window.withdraw()
 
         # Ask user for airport code
-        origin_airport = simpledialog.askstring(title = "Popular Unserved Flight Routes", prompt = "Enter a three-character IATA airport code:")
+        origin_airport = simpledialog.askstring(title = TITLE, prompt = "Enter a three-character IATA airport code:")
 
         if origin_airport is not None:
             # Convert user input to uppercase
@@ -40,7 +42,7 @@ class UnservedRoutesAnalyzer:
             self.analyze_unserved_routes(origin_airport)
         else: # Invalid airport
             # Display message box for error message
-            messagebox.showerror(message = "Airport nonexistent, does not have scheduled commercial air service, or is not in the U.S.", title = "Popular Unserved Flight Routes")
+            messagebox.showerror(message = "Airport nonexistent, does not have scheduled commercial air service, or is not in the U.S.", title = TITLE)
 
             # End the program
             return
@@ -85,12 +87,12 @@ class UnservedRoutesAnalyzer:
         # Format graph
         fig, ax = plt.subplots(figsize = (12, 8))
 
-        # Title and subtitle
-        TITLE = f"Most Popular Unserved Routes from {origin_airport} in 2024"
-        ax.text(0, 1.14, TITLE,
+        # Title
+        ax.text(0, 1.18, f"Most popular unserved flight routes from {origin_airport} in 2024",
                 transform = ax.transAxes, fontsize = 24, va = 'top')
-        ax.text(0, 1.02, "Based on Bureau of Transportation Statistics (BTS) 2024 DB1B tables.\nIn parentheses under "
-                         "each count is the average daily passenger count. A Boeing 737-800 seats around 160 "
+
+        # Subtitle
+        ax.text(0, 1.04, "Based on Bureau of Transportation Statistics (BTS) 2024 DB1B tables.\nIn parentheses under each count is the average daily passenger count. A Boeing 737-800 seats around 160 "
                          "passengers.",
                 transform = ax.transAxes, fontsize = 12, color = '#a7a9ac', va = 'bottom')
 
@@ -100,6 +102,10 @@ class UnservedRoutesAnalyzer:
         plt.xticks(fontsize = 12)
         plt.yticks(fontsize = 12)
         plt.ylim(0, df["PASSENGERS_TIMES_10"].max() * 1.1)
+
+        # Remove top and right borders
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
 
         # Change window title
         fig.canvas.manager.set_window_title(TITLE)
