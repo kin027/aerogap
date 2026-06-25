@@ -49,40 +49,62 @@ class UnservedFlightRoutesAnalyzer:
 
     # Method to analyze data tables
     def analyze_data_tables(self):
-        # Clean datasets by dropping N/A values (shouldn't be there anyway but double-check)
+        # First, clean T-100 table
+
+        # Drop NA values
+        self.T100_df.dropna(inplace=True)
+
+        # Filter T-100 so that DEPARTURES_SCHEDULED > 0 (exclude diversions, etc.)
+        self.T100_df = self.T100_df[self.T100_df["DEPARTURES_SCHEDULED"] > 0]
+
+        # Filter T-100 so that CLASS is "F" (Scheduled Passenger/ Cargo Service F) (exclude non-scheduled flights)
+        self.T100_df = self.T100_df[self.T100_df["CLASS"] == "F"]
+
+        # Filter T-100 so that PASSENGERS > 0 (exclude cargo)
+        self.T100_df = self.T100_df[self.T100_df["PASSENGERS"] > 0]
+
+        # Keep only the ORIGIN and DEST columns in T-100
+        self.T100_df = self.T100_df[["ORIGIN", "DEST"]].copy()
+
+        # Filter T100_df down to rows where ORIGIN is same as user input
+        self.T100_df = self.T100_df[self.T100_df["ORIGIN"] == self.origin_airport]
+
+        # Remove duplicate rows (same routes)
+        self.T100_df.drop_duplicates(inplace=True)
+
+        # Second, clean DB1B table
+
+        # Drop NA values
         self.DB1B_df.dropna(inplace = True)
-        self.T100_df.dropna(inplace = True)
 
         # Filter DB1B_df down to rows where origin airport is same as user input
-        filtered_DB1B_df = self.DB1B_df[self.DB1B_df.ORIGIN == self.origin_airport].copy()
+        self.DB1B_df = self.DB1B_df[self.DB1B_df["ORIGIN"] == self.origin_airport].copy()
 
         # Create new column that multiplies passenger counts by 10, as DB1B is a 10% sample of tickets
-        filtered_DB1B_df["PASSENGERS_TIMES_10"] = filtered_DB1B_df["PASSENGERS"] * 10
+        self.DB1B_df["PASSENGERS_TIMES_10"] = self.DB1B_df["PASSENGERS"] * 10
 
-        # Create new column that calculates the passengers daily by dividing the passengers_times_10 column by 365 and
+        # Create new column that calculates the passengers daily by dividing the PASSENGERS_TIMES_100 column by 365 and
         # round to 2 decimal places
-        filtered_DB1B_df["PASSENGERS_DAILY"] = (filtered_DB1B_df["PASSENGERS_TIMES_10"] / 365).round(2)
+        self.DB1B_df["PASSENGERS_DAILY"] = (self.DB1B_df["PASSENGERS_TIMES_10"] / 365).round(2)
 
         # Sort the df by passenger counts, highest to lowest, using merge sort
-        filtered_DB1B_df.sort_values(by="PASSENGERS_TIMES_10", ascending=False, inplace=True, kind="mergesort")
+        self.DB1B_df.sort_values(by="PASSENGERS_TIMES_10", ascending=False, inplace=True, kind="mergesort")
 
-        # Filter T100_df down to rows where origin airport is same as user input and passengers > 0 (as T100 contains
-        # cargo flights)
-        filtered_T100_df = self.T100_df[(self.T100_df.ORIGIN == self.origin_airport) & (self.T100_df.PASSENGERS > 0)]
-
-        # Create a new column of boolean values in filtered_DB1B_df that indicates whether a route has a nonstop
+        # Create a new column of boolean values in self.DB1B_df that indicates whether a route has a nonstop
         # flight by cross-checking with T100_df, which indicates whether a nonstop flight exists
-        filtered_DB1B_df["HAS_NONSTOP_FLIGHT"] = filtered_DB1B_df["DEST"].isin(filtered_T100_df["DEST"])
+        self.DB1B_df["HAS_NONSTOP_FLIGHT"] = self.DB1B_df["DEST"].isin(self.T100_df["DEST"])
+
+        # Now do the magic
 
         # Filter to routes without nonstop flights
-        filtered_DB1B_df = filtered_DB1B_df[filtered_DB1B_df["HAS_NONSTOP_FLIGHT"] == False]
+        self.DB1B_df = self.DB1B_df[self.DB1B_df["HAS_NONSTOP_FLIGHT"] == False]
 
         # Grab first 10 rows
-        filtered_DB1B_df = filtered_DB1B_df.head(10)
+        self.DB1B_df = self.DB1B_df.head(10)
 
         # Deal with edge case where filtered df might be empty
-        if not filtered_DB1B_df.empty:
-            self.final_df = filtered_DB1B_df
+        if not self.DB1B_df.empty:
+            self.final_df = self.DB1B_df
             return True
         else:
             messagebox.showerror(message=f"Everyone who flew out of {self.origin_airport} took a nonstop flight. (This "
