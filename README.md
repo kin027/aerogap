@@ -10,7 +10,7 @@ I've always been fascinated in airline route networks and passenger flows across
 
 ### What I learned from this
 
-Running this analysis on my home airports revealed interesting hidden markets I hadn't considered. Without this, I never would've known that the top unserved airport from ABQ is LGA, where, in 2024, over 38,000 passengers connected to reach the Big Apple. (But any frequent flyer would know that [LaGuardia's perimeter rule](https://en.wikipedia.org/wiki/LaGuardia_Airport#:~:text=Also%20in%201984%2C%20to%20further%20combat%20overcrowding,became%20the%20only%20exception%20to%20the%20rule.) prevents nonstop service from existing, at least on six days of the week.)
+Running this analysis on my home airports revealed interesting hidden markets I hadn't considered. Without this, I never would've known that the top unserved airport from PDX (Portland, OR) is MSY (New Orleans), where, in 2024, over 39,000 passengers connected to reach the Big Easy. (And Alaska Airlines probably knew too, seeing as they [finally started that route in 2025](https://news.alaskaair.com/loyalty/alaska-airlines-launches-seasonal-daily-flight-between-portland-and-new-orleans/).)
 
 **Give it a run with your home airport to see the hidden markets you might find!**
 
