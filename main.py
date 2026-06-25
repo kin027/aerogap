@@ -5,10 +5,10 @@ DB1B_PATH = "final_datasets/DB1B_2024_consolidated.csv"
 T100_PATH = "final_datasets/T100_2024.csv"
 
 def main():
-    # Create RoutesAnalyzer object
+    # Create UnservedFlightRoutesAnalyzer object
     analyzer = UnservedFlightRoutesAnalyzer(DB1B_PATH, T100_PATH)
 
-    # Call analyzer analyze_routes method
+    # Call analyzer run method
     analyzer.run()
 
 main()
