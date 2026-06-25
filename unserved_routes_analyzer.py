@@ -18,7 +18,7 @@ class UnservedRoutesAnalyzer:
 
     # Method to get airport code from user
     def get_origin_airport(self):
-        # Create new tkinter window then withdraw it
+        # Create new Tkinter window then withdraw it
         window = tkinter.Tk()
         window.withdraw()
 
@@ -31,7 +31,7 @@ class UnservedRoutesAnalyzer:
 
             # Call method to validate origin airport
             self.check_valid_origin_airport(origin_airport)
-        else:
+        else: # User hit the cancel button
             # End program
             return
 
@@ -42,14 +42,15 @@ class UnservedRoutesAnalyzer:
             self.analyze_unserved_routes(origin_airport)
         else: # Invalid airport
             # Display message box for error message
-            messagebox.showerror(message = "Airport nonexistent, does not have scheduled commercial air service, or is not in the U.S.", title = TITLE)
+            messagebox.showerror(message = "Airport nonexistent, does not have scheduled commercial air service, or is "
+                                           "not in the U.S.", title = TITLE)
 
             # End the program
             return
 
     # Method to analyze data tables
     def analyze_unserved_routes(self, origin_airport):
-        # Clean datasets by dropping NA values (shouldn't be there anyway but always good to double-check)
+        # Clean datasets by dropping N/A values (shouldn't be there anyway but double-check)
         self.DB1B_df.dropna(inplace = True)
         self.T100_df.dropna(inplace = True)
 
@@ -70,8 +71,8 @@ class UnservedRoutesAnalyzer:
         # cargo flights)
         filtered_T100_df = self.T100_df[(self.T100_df.ORIGIN == origin_airport) & (self.T100_df.PASSENGERS > 0)]
 
-        # Create a new column of boolean values in filtered_DB1B_df that indicates whether a route has a nonstop flight
-        # by cross-checking with T100_df, which indicates whether a nonstop flight exists
+        # Create a new column of boolean values in filtered_DB1B_df that indicates whether a route has a nonstop
+        # flight by cross-checking with T100_df, which indicates whether a nonstop flight exists
         filtered_DB1B_df["HAS_NONSTOP_FLIGHT"] = filtered_DB1B_df["DEST"].isin(filtered_T100_df["DEST"])
 
         # Filter to routes without nonstop flights
@@ -84,39 +85,47 @@ class UnservedRoutesAnalyzer:
         self.create_bar_graph(filtered_DB1B_df, origin_airport)
 
     def create_bar_graph(self, df, origin_airport):
-        # Format graph
-        fig, ax = plt.subplots(figsize = (12, 8))
+        try:
+            # Format graph
+            fig, ax = plt.subplots(figsize = (12, 8))
 
-        # Title
-        ax.text(0, 1.18, f"Most popular unserved flight routes from {origin_airport} in 2024",
-                transform = ax.transAxes, fontsize = 24, va = 'top')
+            # Title
+            ax.text(0, 1.18, f"Most popular unserved flight routes from {origin_airport} in 2024",
+                    transform = ax.transAxes, fontsize = 24, va = 'top')
 
-        # Subtitle
-        ax.text(0, 1.04, "Based on Bureau of Transportation Statistics (BTS) 2024 DB1B tables.\nIn parentheses under each count is the average daily passenger count. A Boeing 737-800 seats around 160 "
-                         "passengers.",
-                transform = ax.transAxes, fontsize = 12, color = '#a7a9ac', va = 'bottom')
+            # Subtitle
+            ax.text(0, 1.04, "Based on Bureau of Transportation Statistics (BTS) 2024 DB1B tables.\nIn parentheses under"
+                             " each count is the average daily passenger count. A Boeing 737-800 seats around 160 "
+                             "passengers.",
+                    transform = ax.transAxes, fontsize = 12, color = '#a7a9ac', va = 'bottom')
 
-        # Labels and scale
-        plt.xlabel("Destination Airport", labelpad = 20, fontsize = 18)
-        plt.ylabel("Passengers", labelpad = 20, fontsize=18)
-        plt.xticks(fontsize = 12)
-        plt.yticks(fontsize = 12)
-        plt.ylim(0, df["PASSENGERS_TIMES_10"].max() * 1.1)
+            # Labels and scale
+            plt.xlabel("Destination Airport", labelpad = 20, fontsize = 18)
+            plt.ylabel("Passengers", labelpad = 20, fontsize=18)
+            plt.xticks(fontsize = 12)
+            plt.yticks(fontsize = 12)
+            plt.ylim(0, df["PASSENGERS_TIMES_10"].max() * 1.1)
 
-        # Remove top and right borders
-        ax.spines['top'].set_visible(False)
-        ax.spines['right'].set_visible(False)
+            # Remove top and right borders
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
 
-        # Change window title
-        fig.canvas.manager.set_window_title(TITLE)
+            # Change window title
+            fig.canvas.manager.set_window_title(TITLE)
 
-        # Create graph
-        graph = plt.bar(df.DEST, df.PASSENGERS_TIMES_10, color = '#0039a6')
-        bar_labels = df["PASSENGERS_TIMES_10"].astype(str).str.cat("\n(" + df["PASSENGERS_DAILY"].astype(str) + ")")
-        plt.bar_label(graph, df.PASSENGERS_TIMES_10.map(int).astype(str) + "\n(" +
-                      df.PASSENGERS_DAILY.map(float).astype(str) + ")", label_type  = "center", padding = 2,
-                      color = "w", fontsize = 12)
-
-        # Show graph
-        plt.tight_layout()
-        plt.show()
+            # Create graph
+            graph = plt.bar(df.DEST, df.PASSENGERS_TIMES_10, color='#0039a6')
+            bar_labels = df["PASSENGERS_TIMES_10"].astype(str).str.cat("\n(" + df["PASSENGERS_DAILY"].astype(str) + ")")
+            plt.bar_label(graph, df.PASSENGERS_TIMES_10.map(int).astype(str) + "\n(" +
+                          df.PASSENGERS_DAILY.map(float).astype(str) + ")", label_type="center", padding=2,
+                          color="w", fontsize=12)
+        except ValueError:
+            # Display message box for error message
+            messagebox.showerror(
+                message=f"No passengers traveled from {origin_airport} to any other airport without connecting. (This i"
+                        f"s common with airports served exclusively by budget airlines that do not sell connections.)",
+                title=TITLE)
+        else:
+            # Show graph
+            plt.tight_layout()
+            plt.show()
