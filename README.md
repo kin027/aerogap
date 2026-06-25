@@ -2,7 +2,7 @@
 
 ## Overview
 
-Hi, avgeek (aviation enthusiast) here! I built this tool to identify popular unserved flight routes in the U.S. commercial aviation network. ✈️
+Hi, avgeek (aviation enthusiast) here! Just curious to explore popular unserved flight routes in the U.S. commercial aviation network. ✈️
 
 ### What this does
 
@@ -14,9 +14,9 @@ I've always been fascinated in airline route networks and passenger flows across
 
 ### What I learned from this
 
-Running this analysis on my home airports revealed interesting hidden markets I hadn't considered. Without this, I never would've known that the top unserved airport from ABQ is LGA, where, in 2024, over 38,000 passengers connected to reach the Big Apple. (Though as any enthusiast knows, [LaGuardia's perimeter rule](https://en.wikipedia.org/wiki/LaGuardia_Airport#:~:text=Also%20in%201984%2C%20to%20further%20combat%20overcrowding,became%20the%20only%20exception%20to%20the%20rule.) prevents nonstop service from existing, at least on six days of the week.)
+Running this analysis on my home airports revealed interesting hidden markets I hadn't considered. Without this, I never would've known that the top unserved airport from ABQ is LGA, where, in 2024, over 38,000 passengers connected to reach the Big Apple. (But any frequent flyer would know that [LaGuardia's perimeter rule](https://en.wikipedia.org/wiki/LaGuardia_Airport#:~:text=Also%20in%201984%2C%20to%20further%20combat%20overcrowding,became%20the%20only%20exception%20to%20the%20rule.) prevents nonstop service from existing, at least on six days of the week.)
 
-**Give it a test flight with your home airport to see what popular unserved flight routes you find!**
+**Give it a run with your home airport to see the hidden markets you might find!**
 
 ## Data Sources
 
@@ -31,19 +31,11 @@ Running this analysis on my home airports revealed interesting hidden markets I 
 
 - Python
 
-
 - pandas
-
 
 - matplotlib
 
-This is kind of a rudimentary program at the moment, but I have some ideas for expansion.
-
-Speaking of which...
-
-## Ideas for Expansion
-
-- Allowing the graph to show both served and unserved routes with a color-coded bar chart
+- Tkinter
 
 ## Limitations
 
@@ -60,7 +52,7 @@ Obviously there are some limitations that come out of analyzing only two dataset
   - There's a 6-month delay for when the government makes the DB1B tables available to the public
 
 
-- The exact passenger count is unknown because the DB1B tables are only a random 10% sample of tickets, so the program multiplies DB1B numbers by 10 to approximate the actual count
+- The exact passenger count is unknown because the DB1B tables are only a random 10% sample of tickets, so DB1B counts are multiplied by 10 to approximate the actual count
 
     
 - Routes with an airport outside the U.S. are excluded because the DB1B tables only have American airports
