@@ -1,6 +1,9 @@
 # Class for analyzing
 import pandas as pd
 import matplotlib.pyplot as plt
+import tkinter
+from tkinter import simpledialog
+from tkinter import messagebox
 
 class UnservedRoutesAnalyzer:
     def __init__(self, db1b_path, t100_path):
@@ -11,28 +14,39 @@ class UnservedRoutesAnalyzer:
         # Get a set of valid origin airport codes
         self.origin_airports_set = set(self.DB1B_df.ORIGIN)
 
-    # Method to validate user-entered origin airport input
-    def check_valid_origin_airport(self, origin_airport):
-        if origin_airport in self.origin_airports_set:
-            result = True
+    # Method to get airport code from user
+    def get_origin_airport(self):
+        # Create new tkinter window then withdraw it
+        window = tkinter.Tk()
+        window.withdraw()
+
+        # Ask user for airport code
+        origin_airport = simpledialog.askstring(title = "Popular Unserved Flight Routes", prompt = "Enter a three-character IATA airport code:")
+
+        if origin_airport is not None:
+            # Convert user input to uppercase
+            origin_airport = origin_airport.upper()
+
+            # Call method to validate origin airport
+            self.check_valid_origin_airport(origin_airport)
         else:
-            result = False
-
-        return result
-
-    # "Main" analyzer method
-    def analyze_unserved_routes(self, origin_airport):
-        # Validate origin_airport
-        validation_result = self.check_valid_origin_airport(origin_airport)
-        if not validation_result: # Invalid airport
-            # Print error message
-            print("Airport not found, does not have scheduled commercial air service, or is not in the U.S.")
-
-            # Stop method from proceeding
+            # End program
             return
 
-        # Origin airport is validated, continue analyzing
+    # Method to validate user-entered origin airport
+    def check_valid_origin_airport(self, origin_airport):
+        if origin_airport in self.origin_airports_set: # Valid airport
+            # Call method to analyze data tables
+            self.analyze_unserved_routes(origin_airport)
+        else: # Invalid airport
+            # Display message box for error message
+            messagebox.showerror(message = "Airport nonexistent, does not have scheduled commercial air service, or is not in the U.S.", title = "Popular Unserved Flight Routes")
 
+            # End the program
+            return
+
+    # Method to analyze data tables
+    def analyze_unserved_routes(self, origin_airport):
         # Clean datasets by dropping NA values (shouldn't be there anyway but always good to double-check)
         self.DB1B_df.dropna(inplace = True)
         self.T100_df.dropna(inplace = True)
@@ -64,14 +78,8 @@ class UnservedRoutesAnalyzer:
         # Grab first 10 rows
         filtered_DB1B_df = filtered_DB1B_df.head(10)
 
-        # Print first 10 rows of DB1B_df (for now)
-        print(filtered_DB1B_df)
-
         # Call create_bar_graph method
         self.create_bar_graph(filtered_DB1B_df, origin_airport)
-
-        # Done
-        return
 
     def create_bar_graph(self, df, origin_airport):
         # Format graph
@@ -106,5 +114,3 @@ class UnservedRoutesAnalyzer:
         # Show graph
         plt.tight_layout()
         plt.show()
-
-        return
