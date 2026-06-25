@@ -81,51 +81,48 @@ class UnservedRoutesAnalyzer:
         # Grab first 10 rows
         filtered_DB1B_df = filtered_DB1B_df.head(10)
 
-        # Call create_bar_graph method
-        self.create_bar_graph(filtered_DB1B_df, origin_airport)
+        # Deal with edge case where filtered df might be empty
+        if not filtered_DB1B_df.empty:
+            # Call create_bar_graph method
+            self.create_bar_graph(filtered_DB1B_df, origin_airport)
+        else:
+            messagebox.showerror(message=f"Everyone who flew out of {origin_airport} took a nonstop flight. (This is common with airports served exclusively by a budget airline that does not sell connecting itineraries.)", title=TITLE)
 
     def create_bar_graph(self, df, origin_airport):
-        try:
-            # Format graph
-            fig, ax = plt.subplots(figsize = (12, 8))
+        # Format graph
+        fig, ax = plt.subplots(figsize = (12, 8))
 
-            # Title
-            ax.text(0, 1.18, f"Most popular unserved flight routes from {origin_airport} in 2024",
-                    transform = ax.transAxes, fontsize = 24, va = 'top')
+        # Title
+        ax.text(0, 1.18, f"Most popular unserved flight routes from {origin_airport} in 2024",
+                transform = ax.transAxes, fontsize = 24, va = 'top')
 
-            # Subtitle
-            ax.text(0, 1.04, "Based on Bureau of Transportation Statistics (BTS) 2024 DB1B tables.\nIn parentheses under"
-                             " each count is the average daily passenger count. A Boeing 737-800 seats around 160 "
-                             "passengers.",
-                    transform = ax.transAxes, fontsize = 12, color = '#a7a9ac', va = 'bottom')
+        # Subtitle
+        ax.text(0, 1.04, "Based on Bureau of Transportation Statistics (BTS) 2024 DB1B tables.\nIn parentheses under"
+                         " each count is the average daily passenger count. A Boeing 737-800 seats around 160 "
+                         "passengers.",
+                transform = ax.transAxes, fontsize = 12, color = '#a7a9ac', va = 'bottom')
 
-            # Labels and scale
-            plt.xlabel("Destination Airport", labelpad = 20, fontsize = 18)
-            plt.ylabel("Passengers", labelpad = 20, fontsize=18)
-            plt.xticks(fontsize = 12)
-            plt.yticks(fontsize = 12)
-            plt.ylim(0, df["PASSENGERS_TIMES_10"].max() * 1.1)
+        # Labels and scale
+        plt.xlabel("Destination Airport", labelpad = 20, fontsize = 18)
+        plt.ylabel("Passengers", labelpad = 20, fontsize=18)
+        plt.xticks(fontsize = 12)
+        plt.yticks(fontsize = 12)
+        plt.ylim(0, df["PASSENGERS_TIMES_10"].max() * 1.1)
 
-            # Remove top and right borders
-            ax.spines['top'].set_visible(False)
-            ax.spines['right'].set_visible(False)
+        # Remove top and right borders
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
 
-            # Change window title
-            fig.canvas.manager.set_window_title(TITLE)
+        # Change window title
+        fig.canvas.manager.set_window_title(TITLE)
 
-            # Create graph
-            graph = plt.bar(df.DEST, df.PASSENGERS_TIMES_10, color='#0039a6')
-            bar_labels = df["PASSENGERS_TIMES_10"].astype(str).str.cat("\n(" + df["PASSENGERS_DAILY"].astype(str) + ")")
-            plt.bar_label(graph, df.PASSENGERS_TIMES_10.map(int).astype(str) + "\n(" +
-                          df.PASSENGERS_DAILY.map(float).astype(str) + ")", label_type="center", padding=2,
-                          color="w", fontsize=12)
-        except ValueError:
-            # Display message box for error message
-            messagebox.showerror(
-                message=f"No passengers traveled from {origin_airport} to any other airport without connecting. (This i"
-                        f"s common with airports served exclusively by budget airlines that do not sell connections.)",
-                title=TITLE)
-        else:
-            # Show graph
-            plt.tight_layout()
-            plt.show()
+        # Create graph
+        graph = plt.bar(df.DEST, df.PASSENGERS_TIMES_10, color='#0039a6')
+        bar_labels = df["PASSENGERS_TIMES_10"].astype(str).str.cat("\n(" + df["PASSENGERS_DAILY"].astype(str) + ")")
+        plt.bar_label(graph, df.PASSENGERS_TIMES_10.map(int).astype(str) + "\n(" +
+                      df.PASSENGERS_DAILY.map(float).astype(str) + ")", label_type="center", padding=2,
+                      color="w", fontsize=12)
+
+        # Show graph
+        plt.tight_layout()
+        plt.show()
