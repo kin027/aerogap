@@ -1,4 +1,3 @@
-# Class for analyzing
 import pandas as pd
 import matplotlib
 matplotlib.use('TkAgg')
@@ -10,12 +9,11 @@ TITLE = "Popular Unserved Flight Routes"
 
 class UnservedFlightRoutesAnalyzer:
     def __init__(self, db1b_path, t100_path):
-        # Read both DB1B and T-100 CSVs first
-        self.DB1B_df = pd.read_csv(db1b_path)
-        self.T100_df = pd.read_csv(t100_path)
-
-        # Get a set of valid origin airport codes
-        self.origin_airports_set = set(self.DB1B_df.ORIGIN)
+        # Set up DB1B and T-100 attributes
+        self.DB1B_df = pd.DataFrame()
+        self.T100_df = pd.DataFrame()
+        self.DB1B_path = db1b_path
+        self.T100_path = t100_path
 
         # Create new Tkinter window then withdraw it
         self.window = tkinter.Tk()
@@ -25,26 +23,35 @@ class UnservedFlightRoutesAnalyzer:
         self.origin_airport = None
         self.final_df = None
 
-    # Method to get airport code from user
+    # Method to get and validate airport code from user
     def get_origin_airport(self):
         # Ask user for airport code
-        origin_airport = simpledialog.askstring(title = TITLE, prompt = "Enter a three-character IATA airport code:")
+        origin_airport = simpledialog.askstring(title = TITLE, prompt = "Enter a three-character IATA airport code\n"
+                                                                        "for an airport in the U.S.:")
 
         if origin_airport:
             # Convert user input to uppercase
             origin_airport = origin_airport.upper()
 
-            # Set origin_airport attribute to result
-            self.origin_airport = origin_airport
+            # Read CSVs
+            self.DB1B_df = pd.read_csv(self.DB1B_path)
+            self.T100_df = pd.read_csv(self.T100_path)
 
-    # Method to validate user-entered origin airport
-    def validate_origin_airport(self):
-        if self.origin_airport in self.origin_airports_set: # Valid airport
-            return True
-        else: # Invalid airport
-            # Display message box for error message
-            messagebox.showerror(message = "Airport is nonexistent, does not have scheduled commercial air service, or "
-                                           "is not in the U.S.", title = TITLE)
+            # Get a set of valid origin airport codes
+            valid_origin_airports = set(self.DB1B_df["ORIGIN"].unique())
+
+            # Validate user-entered origin airport
+            if origin_airport in valid_origin_airports: # Valid airport
+                # Set origin_airport attribute to result
+                self.origin_airport = origin_airport
+
+                return True
+            else: # Invalid airport
+                # Display message box for error message
+                messagebox.showerror(message = "Airport is nonexistent, does not have scheduled commercial air "
+                                               "service, or is not in the U.S.", title = TITLE)
+                return False
+        else:
             return False
 
     # Method to analyze data tables
@@ -155,14 +162,7 @@ class UnservedFlightRoutesAnalyzer:
 
     def run(self):
         # Call method to get airport code from user
-        self.get_origin_airport()
-
-        if not self.origin_airport: # User hit the cancel button
-            self.window.destroy()
-            return
-
-        # Call method to validate user-entered origin airport
-        if not self.validate_origin_airport():
+        if not self.get_origin_airport():
             self.window.destroy()
             return
 
