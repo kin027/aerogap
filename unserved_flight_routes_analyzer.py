@@ -59,7 +59,7 @@ class UnservedFlightRoutesAnalyzer:
         # First, clean T-100 table
 
         # Drop NA values
-        self.T100_df.dropna(inplace=True)
+        self.T100_df = self.T100_df.dropna()
 
         # Filter T-100 so that DEPARTURES_SCHEDULED > 0 (exclude diversions, etc.)
         self.T100_df = self.T100_df[self.T100_df["DEPARTURES_SCHEDULED"] > 0]
@@ -77,12 +77,12 @@ class UnservedFlightRoutesAnalyzer:
         self.T100_df = self.T100_df[self.T100_df["ORIGIN"] == self.origin_airport]
 
         # Remove duplicate rows (same routes)
-        self.T100_df.drop_duplicates(inplace=True)
+        self.T100_df = self.T100_df.drop_duplicates()
 
         # Second, clean DB1B table
 
         # Drop NA values
-        self.DB1B_df.dropna(inplace = True)
+        self.DB1B_df = self.DB1B_df.dropna()
 
         # Filter DB1B_df down to rows where origin airport is same as user input
         self.DB1B_df = self.DB1B_df[self.DB1B_df["ORIGIN"] == self.origin_airport].copy()
@@ -95,7 +95,7 @@ class UnservedFlightRoutesAnalyzer:
         self.DB1B_df["PASSENGERS_DAILY"] = (self.DB1B_df["PASSENGERS_TIMES_10"] / 365).round(2)
 
         # Sort the df by passenger counts, highest to lowest, using merge sort
-        self.DB1B_df.sort_values(by="PASSENGERS_TIMES_10", ascending=False, inplace=True, kind="mergesort")
+        self.DB1B_df = self.DB1B_df.sort_values(by="PASSENGERS_TIMES_10", ascending=False, kind="mergesort")
 
         # Create a new column of boolean values in self.DB1B_df that indicates whether a route has a nonstop
         # flight by cross-checking with T100_df, which indicates whether a nonstop flight exists
