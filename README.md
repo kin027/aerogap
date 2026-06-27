@@ -61,7 +61,7 @@ I sourced data from the Bureau of Transportation Statistics (BTS), which is repo
 
 - [BTS DB1B Market table for quarters 1-4 of 2024](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EFI&Yv0x=D) (to get passenger flow data)
 
-- [BTS T-100 Segment (All Carriers) table for all of 2024](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EEE) (to identify airport pairs connected with a nonstop flight)
+- [BTS T-100 Segment (All Carriers) table for all of 2024](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EEE) with DepScheduled, Passengers, UniqueCarrierName, Origin, Dest, Year, Class fields (to identify airport pairs connected with a nonstop flight)
 
 ## Libraries Used
 

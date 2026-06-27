@@ -64,11 +64,11 @@ class UnservedFlightRoutesAnalyzer:
         # Filter T-100 so that DEPARTURES_SCHEDULED > 0 (exclude diversions, etc.)
         self.T100_df = self.T100_df[self.T100_df["DEPARTURES_SCHEDULED"] > 0]
 
-        # Filter T-100 so that CLASS is "F" (Scheduled Passenger/ Cargo Service F) (exclude non-scheduled flights)
-        self.T100_df = self.T100_df[self.T100_df["CLASS"] == "F"]
-
         # Filter T-100 so that PASSENGERS > 0 (exclude cargo)
         self.T100_df = self.T100_df[self.T100_df["PASSENGERS"] > 0]
+
+        # Filter T-100 so that CLASS is "F" (Scheduled Passenger/ Cargo Service F) (exclude non-scheduled flights)
+        self.T100_df = self.T100_df[self.T100_df["CLASS"] == "F"]
 
         # Keep only the ORIGIN and DEST columns in T-100
         self.T100_df = self.T100_df[["ORIGIN", "DEST"]].copy()
