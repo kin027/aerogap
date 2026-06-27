@@ -48,8 +48,8 @@ class UnservedFlightRoutesAnalyzer:
                 return True
             else: # Invalid airport
                 # Display message box for error message
-                messagebox.showerror(message = "Airport is nonexistent, does not have scheduled commercial air "
-                                               "service, or is not in the U.S.", title = TITLE)
+                messagebox.showerror(message = "Airport is nonexistent, does not have scheduled commercial passenger "
+                                               "air service, or is not in the U.S.", title = TITLE)
                 return False
         else:
             return False
