@@ -120,7 +120,7 @@ class UnservedFlightRoutesAnalyzer:
             return False
 
     # Method to create and show the graph
-    def create_bar_graph(self):
+    def create_graph(self):
         # Format graph
         fig, ax = plt.subplots(figsize = (12, 8))
 
@@ -161,18 +161,18 @@ class UnservedFlightRoutesAnalyzer:
         plt.show()
 
     def run(self):
-        # Call method to get airport code from user
+        # Call get_origin_airport method
         if not self.get_origin_airport():
             self.window.destroy()
             return
 
-        # Call method to analyze data tables
+        # Call analyze_data_tables method
         if not self.analyze_data_tables():
             self.window.destroy()
             return
 
-        # Call the method to create and show the graph
-        self.create_bar_graph()
+        # Call create_graph method
+        self.create_graph()
 
         # Destroy the window
         self.window.destroy()
