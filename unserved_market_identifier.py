@@ -140,9 +140,10 @@ class UnservedMarketIdentifier:
 
     # Method to create and show the graph
     def create_graph(self):
+        # Constants for graph
         GRAPH_TITLE = f"Top Domestic Unserved Markets from {self.origin_airport} by Passenger Volume (2024)"
+        INSIDE_FONTSIZE = 12
 
-        # Format graph
         fig, ax = plt.subplots(figsize=(12, 8))
 
         # Title
@@ -167,17 +168,21 @@ class UnservedMarketIdentifier:
         )
 
         # Labels and scale
-        plt.xlabel("Destination Airport", labelpad=20, fontsize=12)
+        plt.xlabel("Destination Airport", labelpad=20, fontsize=INSIDE_FONTSIZE)
         plt.ylabel(
-            "Estimated Annual Passengers (Scaled 10% Sample)", labelpad=20, fontsize=12
+            "Estimated Annual Passengers (Scaled 10% Sample)",
+            labelpad=20,
+            fontsize=INSIDE_FONTSIZE,
         )
-        plt.xticks(fontsize=12)
-        plt.yticks(fontsize=12)
+        plt.xticks(fontsize=INSIDE_FONTSIZE)
+        plt.yticks(fontsize=INSIDE_FONTSIZE)
         plt.ylim(0, self.final_df["PASSENGERS_TIMES_10"].max() * 1.1)
 
         # Remove top and right borders
         ax.spines["top"].set_visible(False)
         ax.spines["right"].set_visible(False)
+
+        # Remove x-axis ticks
         ax.tick_params(bottom=False)
 
         # Change window title
@@ -187,6 +192,8 @@ class UnservedMarketIdentifier:
         graph = plt.bar(
             self.final_df.DEST, self.final_df.PASSENGERS_TIMES_10, color="#0039a6"
         )
+
+        # In-bar labels
         plt.bar_label(
             graph,
             self.final_df.PASSENGERS_TIMES_10.map(int).astype(str)
@@ -196,7 +203,7 @@ class UnservedMarketIdentifier:
             label_type="center",
             padding=2,
             color="w",
-            fontsize=12,
+            fontsize=INSIDE_FONTSIZE,
         )
 
         # Show graph
