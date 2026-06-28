@@ -162,17 +162,13 @@ class UnservedFlightRoutesAnalyzer:
 
     def run(self):
         # Call get_origin_airport method
-        if not self.get_origin_airport():
-            self.window.destroy()
-            return
+        if self.get_origin_airport():
 
-        # Call analyze_data_tables method
-        if not self.analyze_data_tables():
-            self.window.destroy()
-            return
+            # Call analyze_data_tables method
+            if self.analyze_data_tables():
 
-        # Call create_graph method
-        self.create_graph()
+                # Call create_graph method
+                self.create_graph()
 
         # Destroy the window
         self.window.destroy()
