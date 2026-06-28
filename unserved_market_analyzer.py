@@ -9,7 +9,7 @@ from tkinter import simpledialog, messagebox
 TITLE = "AeroGap"
 
 
-class UnservedMarketIdentifier:
+class UnservedMarketAnalyzer:
     def __init__(self, db1b_path, t100_path):
         # Set up DB1B and T-100 attributes
         self.DB1B_df = pd.DataFrame()
