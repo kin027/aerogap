@@ -9,7 +9,7 @@ from tkinter import simpledialog, messagebox
 TITLE = "AeroGap"
 
 
-class ServiceGapAnalyzer:
+class UnservedMarketIdentifier:
     def __init__(self, db1b_path, t100_path):
         # Set up DB1B and T-100 attributes
         self.DB1B_df = pd.DataFrame()
@@ -140,9 +140,7 @@ class ServiceGapAnalyzer:
 
     # Method to create and show the graph
     def create_graph(self):
-        GRAPH_TITLE = (
-            f"Top airline nonstop service gaps from {self.origin_airport} in 2024"
-        )
+        GRAPH_TITLE = f"Top airline unserved markets from {self.origin_airport} in 2024"
 
         # Format graph
         fig, ax = plt.subplots(figsize=(12, 8))
