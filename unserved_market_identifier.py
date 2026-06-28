@@ -140,7 +140,7 @@ class UnservedMarketIdentifier:
 
     # Method to create and show the graph
     def create_graph(self):
-        GRAPH_TITLE = f"Top Unserved Markets from {self.origin_airport} by Passenger Volume (2024)"
+        GRAPH_TITLE = f"Top Domestic Unserved Markets from {self.origin_airport} by Passenger Volume (2024)"
 
         # Format graph
         fig, ax = plt.subplots(figsize=(12, 8))
@@ -151,7 +151,7 @@ class UnservedMarketIdentifier:
             1.16,
             GRAPH_TITLE,
             transform=ax.transAxes,
-            fontsize=22,
+            fontsize=20,
             va="top",
         )
 
