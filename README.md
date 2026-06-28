@@ -4,17 +4,21 @@
 
 A Python tool that analyzes 2024 Bureau of Transportation Statistics (BTS) data to identify unserved airline markets with high passenger demand.
 
-### Why I made this
+### Why I Built This
 
-I'm an avgeek (aviation enthusiast) and data nerd. In [my 300,000+ miles at cruising altitude](https://my.flightradar24.com/kin_on_a_plane), I always wondered where the other passengers on my flights connected to/from if they didn't fly nonstop to their final destinations, especially if connecting wasn't a choice (i.e. no nonstop service existed). That curiosity grew into exploring nonstop service gaps from the airports I frequented.
+I'm an avgeek (aviation enthusiast) and data nerd. While I love to take connecting flights even when nonstop service exists ([not too long ago I flew from DFW to ABQ via... ORD!](https://my.flightradar24.com/kin_on_a_plane)), I'm also aware that many passengers are required to connect because no nonstop option was available for them.
 
-Also, network planning is often the defining difference between a profitable airline and one facing bankruptcy. Popular O/D (origin/destination) pairs that lack nonstop service can present significant market opportunities, especially if one end of the route serves as an airline hub. (But of course, the passenger count is just one of many factors in network planning.)
+As a result, each time I step onboard another plane, I always wonder where the other passengers connect to or from. That curiosity drove me to build this tool and explore unserved markets from the airports I frequent.
 
-### What I learned from this
+### Key Insights
 
-Running this analysis on my frequented airports revealed interesting unserved markets I hadn't considered. Without this, I never would've known that the top unserved airport from PDX (Portland, OR) is MSY (New Orleans), where, in 2024, over 39,000 passengers connected to reach the Big Easy. (And Alaska Airlines probably knew too, seeing as it [started seasonal service between the two in 2025](https://news.alaskaair.com/loyalty/alaska-airlines-launches-seasonal-daily-flight-between-portland-and-new-orleans/).)
+Running this analysis on my frequented airports revealed interesting unserved markets I hadn't considered. Without this, I never would've known that the top unserved airport from PDX (Portland, OR) is MSY (New Orleans). In 2024, over 39,000 passengers had to connect to reach the Big Easy. 
 
-**Try it out with your home airport to discover where people are going that airlines aren't!**
+The difference between a profitable airline and one facing bankruptcy could simply be in network planning. Unserved O/D (origin/destination) pairs like PDX-MSY present significant market opportunities, especially if one end of the route is an airline hub.
+
+As it turns out, one end is! Alaska Airlines makes PDX a hub, and they must have seen the same data because they [launched service between PDX and MSY in January 2025](https://news.alaskaair.com/loyalty/alaska-airlines-launches-seasonal-daily-flight-between-portland-and-new-orleans/). Of course, network planners look at factors beyond demand to justify new routes, but I just thought it was cool to see a major airline act on the same unserved market that my analysis found. ✈️
+
+**Try the AeroGap Analyzer out with your home airport to discover where people are going that airlines aren't!**
 
 ## Getting Started
 
@@ -57,7 +61,7 @@ python main.py
 
 ## Data Sources
 
-I sourced data from the Bureau of Transportation Statistics (BTS), which is reported by airlines to the U.S. government.
+I sourced data from the Bureau of Transportation Statistics (BTS), a part of the U.S. Department of Transportation. Airlines report their traffic data to the BTS each month.
 
 - [BTS DB1B Market table for quarters 1-4 of 2024](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EFI&Yv0x=D) (to get passenger flow data)
 
@@ -75,8 +79,8 @@ I sourced data from the Bureau of Transportation Statistics (BTS), which is repo
 
 Obviously there are some limitations that come out of analyzing only two datasets:
 
-- You should probably be cautious with using solely this analysis to determine whether an airline should start new routes because the passenger count is just one piece of the network planning puzzle.
-  - Other factors to consider include fares, _premium_ demand, seasonality, operational constraints, aircraft availability, etc.
+- You should probably be cautious with using solely this analysis to determine whether an airline should start new routes because the demand is just one piece of the network planning puzzle.
+  - Other factors to consider include fares, seasonality, operational constraints, aircraft availability, etc.
 
 - The data is not real-time; it comes from BTS data tables that the government releases only once a quarter (with a six-month delay).
   - 2024 data is analyzed because that is the most recent year with a full year of data.
