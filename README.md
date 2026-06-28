@@ -7,17 +7,15 @@ A Python data analysis tool that identifies the most popular destination airport
 
 ### Why I made this
 
-Alright, so I'm an avgeek (aviation enthusiast) and data nerd. In [my 300,000+ miles at cruising altitude](https://my.flightradar24.com/kin_on_a_plane), I always wondered where the other passengers on my flights connected to/from if they didn't fly nonstop to their final destinations. That curiosity grew into exploring potential gaps in nonstop service from the airports I frequented. 
+I'm an avgeek (aviation enthusiast) and data nerd. In [my 300,000+ miles at cruising altitude](https://my.flightradar24.com/kin_on_a_plane), I always wondered where the other passengers on my flights connected to/from if they didn't fly nonstop to their final destinations. That curiosity grew into exploring potential gaps in nonstop service from the airports I frequented.
 
-Side note: Even if nonstop service existed, I would still connect for fun :D
-
-Also, routes are at the heart of airlines, as their route networks can make or break their bottom lines. Popular O/D (origin/destination) pairs without nonstop service _may_ present an important market opportunity to them. (But of course, the passenger count is just one of many factors in network planning.)
+Also, network planning is often the defining difference between a profitable airline and one facing bankruptcy. Popular O/D (origin/destination) pairs that lack nonstop service can present significant market opportunities, especially if one end of the route serves as an airline hub. (But of course, the passenger count is just one of many factors in network planning.)
 
 ### What I learned from this
 
-Running this analysis on my frequented airports revealed interesting nonstop service gaps I hadn't considered. Without this, I never would've known that the top unserved airport from PDX (Portland, OR) is MSY (New Orleans), where, in 2024, over 39,000 passengers connected to reach the Big Easy. (And Alaska Airlines probably knew too, seeing as they [started seasonal service between the two in 2025](https://news.alaskaair.com/loyalty/alaska-airlines-launches-seasonal-daily-flight-between-portland-and-new-orleans/).)
+Running this analysis on my frequented airports revealed interesting nonstop service gaps I hadn't considered. Without this, I never would've known that the top unserved airport from PDX (Portland, OR) is MSY (New Orleans), where, in 2024, over 39,000 passengers connected to reach the Big Easy. (And Alaska Airlines probably knew too, seeing as they [finally started seasonal service between the two in 2025](https://news.alaskaair.com/loyalty/alaska-airlines-launches-seasonal-daily-flight-between-portland-and-new-orleans/).)
 
-**Give it a run with your home airport to see its nonstop service gaps!**
+**Try it out with your home airport to discover where people are going that airlines aren't!**
 
 ## Getting Started
 

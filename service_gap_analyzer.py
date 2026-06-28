@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import tkinter
 from tkinter import simpledialog, messagebox
 
-TITLE = "Popular Unserved Flight Routes"
+TITLE = "AeroGap"
 
 
 class ServiceGapAnalyzer:
@@ -140,6 +140,10 @@ class ServiceGapAnalyzer:
 
     # Method to create and show the graph
     def create_graph(self):
+        GRAPH_TITLE = (
+            f"Top airline nonstop service gaps from {self.origin_airport} in 2024"
+        )
+
         # Format graph
         fig, ax = plt.subplots(figsize=(12, 8))
 
@@ -147,7 +151,7 @@ class ServiceGapAnalyzer:
         ax.text(
             0,
             1.22,
-            f"Most popular unserved flight routes from {self.origin_airport} in 2024",
+            GRAPH_TITLE,
             transform=ax.transAxes,
             fontsize=24,
             va="top",
@@ -178,9 +182,7 @@ class ServiceGapAnalyzer:
         ax.spines["right"].set_visible(False)
 
         # Change window title
-        fig.canvas.manager.set_window_title(
-            f"Most popular unserved flight routes from {self.origin_airport} in 2024"
-        )
+        fig.canvas.manager.set_window_title(GRAPH_TITLE)
 
         # Create graph
         graph = plt.bar(
