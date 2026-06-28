@@ -69,11 +69,11 @@ I sourced data from the Bureau of Transportation Statistics (BTS), a part of the
 
 ## Libraries Used
 
-- pandas (to comb through the T-100 and DB1B tables)
+- pandas (to analyze the T-100 and DB1B tables)
 
-- matplotlib (to create the visualization)
+- Matplotlib (to create the bar graph)
 
-- Tkinter (to implement the GUI)
+- Tkinter (to create the GUI)
 
 ## Limitations
 
