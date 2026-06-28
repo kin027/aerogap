@@ -9,7 +9,7 @@ from tkinter import simpledialog, messagebox
 TITLE = "Popular Unserved Flight Routes"
 
 
-class UnservedFlightRoutesAnalyzer:
+class ServiceGapAnalyzer:
     def __init__(self, db1b_path, t100_path):
         # Set up DB1B and T-100 attributes
         self.DB1B_df = pd.DataFrame()
