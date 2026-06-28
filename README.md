@@ -1,5 +1,5 @@
 # AeroGap
-Airline Unserved Market Identifier
+Unserved Airline Market Identifier
 
 ## Overview
 
@@ -7,7 +7,7 @@ A Python data analysis tool that identifies unserved airline markets with high p
 
 ### Why I made this
 
-I'm an avgeek (aviation enthusiast) and data nerd. In [my 300,000+ miles at cruising altitude](https://my.flightradar24.com/kin_on_a_plane), I always wondered where the other passengers on my flights connected to/from if they didn't fly nonstop to their final destinations, especially if connecting wasn't a choice for them. That curiosity grew into exploring nonstop service gaps from the airports I frequented.
+I'm an avgeek (aviation enthusiast) and data nerd. In [my 300,000+ miles at cruising altitude](https://my.flightradar24.com/kin_on_a_plane), I always wondered where the other passengers on my flights connected to/from if they didn't fly nonstop to their final destinations, especially if connecting wasn't a choice (i.e. no nonstop service existed). That curiosity grew into exploring nonstop service gaps from the airports I frequented.
 
 Also, network planning is often the defining difference between a profitable airline and one facing bankruptcy. Popular O/D (origin/destination) pairs that lack nonstop service can present significant market opportunities, especially if one end of the route serves as an airline hub. (But of course, the passenger count is just one of many factors in network planning.)
 
