@@ -1,11 +1,13 @@
 import pandas as pd
 import matplotlib
-matplotlib.use('TkAgg')
+
+matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 import tkinter
 from tkinter import simpledialog, messagebox
 
 TITLE = "Popular Unserved Flight Routes"
+
 
 class UnservedFlightRoutesAnalyzer:
     def __init__(self, db1b_path, t100_path):
@@ -26,8 +28,11 @@ class UnservedFlightRoutesAnalyzer:
     # Method to get and validate airport code from user
     def get_origin_airport(self):
         # Ask user for airport code
-        origin_airport = simpledialog.askstring(title = TITLE, prompt = "Enter a three-character IATA airport code\n"
-                                                                        "for an airport in the U.S.:")
+        origin_airport = simpledialog.askstring(
+            title=TITLE,
+            prompt="Enter a three-character IATA airport code\n"
+            "for an airport in the U.S.:",
+        )
 
         if origin_airport:
             # Convert user input to uppercase
@@ -41,15 +46,18 @@ class UnservedFlightRoutesAnalyzer:
             valid_origin_airports = set(self.DB1B_df["ORIGIN"].unique())
 
             # Validate user-entered origin airport
-            if origin_airport in valid_origin_airports: # Valid airport
+            if origin_airport in valid_origin_airports:  # Valid airport
                 # Set origin_airport attribute to result
                 self.origin_airport = origin_airport
 
                 return True
-            else: # Invalid airport
+            else:  # Invalid airport
                 # Display message box for error message
-                messagebox.showerror(message = "Airport is nonexistent, does not have scheduled commercial passenger "
-                                               "air service, or is not in the U.S.", title = TITLE)
+                messagebox.showerror(
+                    message="Airport is nonexistent, does not have scheduled commercial passenger "
+                    "air service, or is not in the U.S.",
+                    title=TITLE,
+                )
                 return False
         else:
             return False
@@ -85,21 +93,29 @@ class UnservedFlightRoutesAnalyzer:
         self.DB1B_df = self.DB1B_df.dropna()
 
         # Filter DB1B_df down to rows where origin airport is same as user input
-        self.DB1B_df = self.DB1B_df[self.DB1B_df["ORIGIN"] == self.origin_airport].copy()
+        self.DB1B_df = self.DB1B_df[
+            self.DB1B_df["ORIGIN"] == self.origin_airport
+        ].copy()
 
         # Create new column that multiplies passenger counts by 10, as DB1B is a 10% sample of tickets
         self.DB1B_df["PASSENGERS_TIMES_10"] = self.DB1B_df["PASSENGERS"] * 10
 
         # Create new column that calculates the passengers daily by dividing the PASSENGERS_TIMES_100 column by 365 and
         # round to 2 decimal places
-        self.DB1B_df["PASSENGERS_DAILY"] = (self.DB1B_df["PASSENGERS_TIMES_10"] / 365).round(2)
+        self.DB1B_df["PASSENGERS_DAILY"] = (
+            self.DB1B_df["PASSENGERS_TIMES_10"] / 365
+        ).round(2)
 
         # Sort the df by passenger counts, highest to lowest, using merge sort
-        self.DB1B_df = self.DB1B_df.sort_values(by="PASSENGERS_TIMES_10", ascending=False, kind="mergesort")
+        self.DB1B_df = self.DB1B_df.sort_values(
+            by="PASSENGERS_TIMES_10", ascending=False, kind="mergesort"
+        )
 
         # Create a new column of boolean values in self.DB1B_df that indicates whether a route has a nonstop
         # flight by cross-checking with T100_df, which indicates whether a nonstop flight exists
-        self.DB1B_df["HAS_NONSTOP_FLIGHT"] = self.DB1B_df["DEST"].isin(self.T100_df["DEST"])
+        self.DB1B_df["HAS_NONSTOP_FLIGHT"] = self.DB1B_df["DEST"].isin(
+            self.T100_df["DEST"]
+        )
 
         # Now do the magic
 
@@ -114,47 +130,78 @@ class UnservedFlightRoutesAnalyzer:
             self.final_df = self.DB1B_df
             return True
         else:
-            messagebox.showerror(message=f"Everyone who flew out of {self.origin_airport} took a nonstop flight. (This "
-                                         f"is common with airports served exclusively by a budget airline that does "
-                                         f"not sell connecting itineraries.)", title=TITLE)
+            messagebox.showerror(
+                message=f"Everyone who flew out of {self.origin_airport} took a nonstop flight. (This "
+                f"is common with airports served exclusively by a budget airline that does "
+                f"not sell connecting itineraries.)",
+                title=TITLE,
+            )
             return False
 
     # Method to create and show the graph
     def create_graph(self):
         # Format graph
-        fig, ax = plt.subplots(figsize = (12, 8))
+        fig, ax = plt.subplots(figsize=(12, 8))
 
         # Title
-        ax.text(0, 1.22, f"Most popular unserved flight routes from {self.origin_airport} in 2024",
-                transform = ax.transAxes, fontsize = 24, va = 'top')
+        ax.text(
+            0,
+            1.22,
+            f"Most popular unserved flight routes from {self.origin_airport} in 2024",
+            transform=ax.transAxes,
+            fontsize=24,
+            va="top",
+        )
 
         # Subtitle
-        ax.text(0, 1.04, "Based on Bureau of Transportation Statistics (BTS) 2024 DB1B tables.\nIn parentheses under"
-                         " each count is the average daily passenger count.\nFor context, a Boeing 737-800 seats "
-                         "around 160 passengers, and an Embraer E175LR seats around 76 passengers.",
-                transform = ax.transAxes, fontsize = 12, color = '#a7a9ac', va = 'bottom')
+        ax.text(
+            0,
+            1.04,
+            "Based on Bureau of Transportation Statistics (BTS) 2024 DB1B tables.\nIn parentheses under"
+            " each count is the average daily passenger count.\nFor context, a Boeing 737-800 seats "
+            "around 160 passengers, and an Embraer E175LR seats around 76 passengers.",
+            transform=ax.transAxes,
+            fontsize=12,
+            color="#a7a9ac",
+            va="bottom",
+        )
 
         # Labels and scale
-        plt.xlabel("Destination Airport", labelpad = 20, fontsize = 18)
-        plt.ylabel("Passengers", labelpad = 20, fontsize=18)
-        plt.xticks(fontsize = 12)
-        plt.yticks(fontsize = 12)
+        plt.xlabel("Destination Airport", labelpad=20, fontsize=18)
+        plt.ylabel("Passengers", labelpad=20, fontsize=18)
+        plt.xticks(fontsize=12)
+        plt.yticks(fontsize=12)
         plt.ylim(0, self.final_df["PASSENGERS_TIMES_10"].max() * 1.1)
 
         # Remove top and right borders
-        ax.spines['top'].set_visible(False)
-        ax.spines['right'].set_visible(False)
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
 
         # Change window title
-        fig.canvas.manager.set_window_title(f"Most popular unserved flight routes from {self.origin_airport} in 2024")
+        fig.canvas.manager.set_window_title(
+            f"Most popular unserved flight routes from {self.origin_airport} in 2024"
+        )
 
         # Create graph
-        graph = plt.bar(self.final_df.DEST, self.final_df.PASSENGERS_TIMES_10, color='#0039a6')
-        bar_labels = self.final_df["PASSENGERS_TIMES_10"].astype(str).str.cat("\n(" +
-                     self.final_df["PASSENGERS_DAILY"].astype(str) + ")")
-        plt.bar_label(graph, self.final_df.PASSENGERS_TIMES_10.map(int).astype(str) + "\n(" +
-                      self.final_df.PASSENGERS_DAILY.map(float).astype(str) + ")", label_type="center", padding=2,
-                      color="w", fontsize=12)
+        graph = plt.bar(
+            self.final_df.DEST, self.final_df.PASSENGERS_TIMES_10, color="#0039a6"
+        )
+        bar_labels = (
+            self.final_df["PASSENGERS_TIMES_10"]
+            .astype(str)
+            .str.cat("\n(" + self.final_df["PASSENGERS_DAILY"].astype(str) + ")")
+        )
+        plt.bar_label(
+            graph,
+            self.final_df.PASSENGERS_TIMES_10.map(int).astype(str)
+            + "\n("
+            + self.final_df.PASSENGERS_DAILY.map(float).astype(str)
+            + ")",
+            label_type="center",
+            padding=2,
+            color="w",
+            fontsize=12,
+        )
 
         # Show graph
         plt.tight_layout()
