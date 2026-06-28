@@ -167,8 +167,10 @@ class UnservedMarketIdentifier:
         )
 
         # Labels and scale
-        plt.xlabel("Destination Airport", labelpad=20, fontsize=18)
-        plt.ylabel("Passengers", labelpad=20, fontsize=18)
+        plt.xlabel("Destination Airport", labelpad=20, fontsize=12)
+        plt.ylabel(
+            "Estimated Annual Passengers (Scaled 10% Sample)", labelpad=20, fontsize=12
+        )
         plt.xticks(fontsize=12)
         plt.yticks(fontsize=12)
         plt.ylim(0, self.final_df["PASSENGERS_TIMES_10"].max() * 1.1)
@@ -176,6 +178,7 @@ class UnservedMarketIdentifier:
         # Remove top and right borders
         ax.spines["top"].set_visible(False)
         ax.spines["right"].set_visible(False)
+        ax.tick_params(bottom=False)
 
         # Change window title
         fig.canvas.manager.set_window_title(GRAPH_TITLE)
@@ -183,11 +186,6 @@ class UnservedMarketIdentifier:
         # Create graph
         graph = plt.bar(
             self.final_df.DEST, self.final_df.PASSENGERS_TIMES_10, color="#0039a6"
-        )
-        bar_labels = (
-            self.final_df["PASSENGERS_TIMES_10"]
-            .astype(str)
-            .str.cat("\n(" + self.final_df["PASSENGERS_DAILY"].astype(str) + ")")
         )
         plt.bar_label(
             graph,
