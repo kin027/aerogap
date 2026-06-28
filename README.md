@@ -1,9 +1,8 @@
-# AeroGap
-Unserved Airline Market Identifier
+# AeroGap Analyzer
 
 ## Overview
 
-A Python data analysis tool that identifies unserved airline markets with high passenger demand using 2024 Bureau of Transportation Statistics (BTS) data.
+A Python tool that analyzes 2024 Bureau of Transportation Statistics (BTS) data to identify unserved airline markets with high passenger demand.
 
 ### Why I made this
 
