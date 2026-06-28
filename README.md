@@ -13,7 +13,7 @@ Also, network planning is often the defining difference between a profitable air
 
 ### What I learned from this
 
-Running this analysis on my frequented airports revealed interesting unserved markets I hadn't considered. Without this, I never would've known that the top unserved airport from PDX (Portland, OR) is MSY (New Orleans), where, in 2024, over 39,000 passengers connected to reach the Big Easy. (And Alaska Airlines probably knew too, seeing as they [finally started seasonal service between the two in 2025](https://news.alaskaair.com/loyalty/alaska-airlines-launches-seasonal-daily-flight-between-portland-and-new-orleans/).)
+Running this analysis on my frequented airports revealed interesting unserved markets I hadn't considered. Without this, I never would've known that the top unserved airport from PDX (Portland, OR) is MSY (New Orleans), where, in 2024, over 39,000 passengers connected to reach the Big Easy. (And Alaska Airlines probably knew too, seeing as it [started seasonal service between the two in 2025](https://news.alaskaair.com/loyalty/alaska-airlines-launches-seasonal-daily-flight-between-portland-and-new-orleans/).)
 
 **Try it out with your home airport to discover where people are going that airlines aren't!**
 

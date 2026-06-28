@@ -140,7 +140,7 @@ class UnservedMarketIdentifier:
 
     # Method to create and show the graph
     def create_graph(self):
-        GRAPH_TITLE = f"Top airline unserved markets from {self.origin_airport} in 2024"
+        GRAPH_TITLE = f"Top Unserved Markets from {self.origin_airport} by Passenger Volume (2024)"
 
         # Format graph
         fig, ax = plt.subplots(figsize=(12, 8))
@@ -148,10 +148,10 @@ class UnservedMarketIdentifier:
         # Title
         ax.text(
             0,
-            1.22,
+            1.16,
             GRAPH_TITLE,
             transform=ax.transAxes,
-            fontsize=24,
+            fontsize=22,
             va="top",
         )
 
@@ -159,9 +159,7 @@ class UnservedMarketIdentifier:
         ax.text(
             0,
             1.04,
-            "Based on Bureau of Transportation Statistics (BTS) 2024 DB1B tables.\nIn parentheses under"
-            " each count is the average daily passenger count.\nFor context, a Boeing 737-800 seats "
-            "around 160 passengers, and an Embraer E175LR seats around 76 passengers.",
+            "Based on Bureau of Transportation Statistics (BTS) 2024 DB1B tables.\nValues in parentheses represent average daily passengers. An Embraer E175LR seats around 76 passengers.",
             transform=ax.transAxes,
             fontsize=12,
             color="#a7a9ac",
