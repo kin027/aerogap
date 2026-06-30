@@ -131,7 +131,7 @@ class UnservedMarketAnalyzer:
             return True
         else:
             messagebox.showerror(
-                message=f"Everyone who flew out of {self.origin_airport} took a nonstop flight. (This "
+                message=f"No passengers from {self.origin_airport} connected to an onward flight.\n\n(This "
                 f"is common with airports served exclusively by a budget airline that does "
                 f"not sell connecting itineraries.)",
                 title=TITLE,
@@ -142,72 +142,95 @@ class UnservedMarketAnalyzer:
     def create_graph(self):
         # Constants for graph
         GRAPH_TITLE = f"Top Domestic Unserved Markets from {self.origin_airport} by Passenger Volume (2024)"
-        INSIDE_FONTSIZE = 12
+        SMALL_FONT_SIZE = 12
+        MEDIUM_FONT_SIZE = 16
+        LARGE_FONT_SIZE = 20
+        FONT = "Helvetica"
 
-        fig, ax = plt.subplots(figsize=(12, 8))
-
-        # Title
-        ax.text(
-            0,
-            1.16,
-            GRAPH_TITLE,
-            transform=ax.transAxes,
-            fontsize=20,
-            va="top",
-        )
-
-        # Subtitle
-        ax.text(
-            0,
-            1.04,
-            "Based on Bureau of Transportation Statistics (BTS) 2024 DB1B tables.\nValues in parentheses represent average daily passengers. An Embraer E175LR seats around 76 passengers.",
-            transform=ax.transAxes,
-            fontsize=12,
-            color="#a7a9ac",
-            va="bottom",
-        )
-
-        # Labels and scale
-        plt.xlabel("Destination Airport", labelpad=20, fontsize=INSIDE_FONTSIZE)
-        plt.ylabel(
-            "Estimated Annual Passengers (Scaled 10% Sample)",
-            labelpad=20,
-            fontsize=INSIDE_FONTSIZE,
-        )
-        plt.xticks(fontsize=INSIDE_FONTSIZE)
-        plt.yticks(fontsize=INSIDE_FONTSIZE)
-        plt.ylim(0, self.final_df["PASSENGERS_TIMES_10"].max() * 1.1)
-
-        # Remove top and right borders
-        ax.spines["top"].set_visible(False)
-        ax.spines["right"].set_visible(False)
-
-        # Remove x-axis ticks
-        ax.tick_params(bottom=False)
-
-        # Change window title
-        fig.canvas.manager.set_window_title(GRAPH_TITLE)
+        # Graph size
+        plt.figure(num=GRAPH_TITLE, figsize=(12, 8))
 
         # Create graph
         graph = plt.bar(
-            self.final_df.DEST, self.final_df.PASSENGERS_TIMES_10, color="#0039a6"
+            x=self.final_df.DEST,
+            height=self.final_df.PASSENGERS_TIMES_10,
+            color="#0039a6",
+        )
+
+        # Format graph
+
+        # Title
+
+        plt.title(
+            label=GRAPH_TITLE,
+            pad=20,
+            loc="left",
+            fontfamily=FONT,
+            fontsize=LARGE_FONT_SIZE,
+            fontweight="bold",
+            color="#000",
+            wrap=True,
         )
 
         # In-bar labels
         plt.bar_label(
-            graph,
-            self.final_df.PASSENGERS_TIMES_10.map(int).astype(str)
+            container=graph,
+            labels=self.final_df.PASSENGERS_TIMES_10.map(int).astype(str)
             + "\n("
             + self.final_df.PASSENGERS_DAILY.map(float).astype(str)
             + ")",
             label_type="center",
             padding=2,
-            color="w",
-            fontsize=INSIDE_FONTSIZE,
+            color="#fff",
+            fontsize=SMALL_FONT_SIZE,
+            fontfamily=FONT,
         )
+
+        # x-axis
+        plt.xlabel(
+            "Destination Airport",
+            labelpad=20,
+            loc="center",
+            fontsize=MEDIUM_FONT_SIZE,
+            fontfamily=FONT,
+            wrap=True,
+        )
+        plt.xticks(fontsize=SMALL_FONT_SIZE, fontfamily=FONT)
+        plt.tick_params(axis="x", which="both", length=0, pad=8)
+
+        # y-axis
+        plt.ylabel(
+            "Estimated Annual Passengers (Scaled 10% Sample)",
+            labelpad=20,
+            loc="center",
+            fontsize=MEDIUM_FONT_SIZE,
+            fontfamily=FONT,
+            wrap=True,
+        )
+        plt.yticks(fontsize=SMALL_FONT_SIZE, fontfamily=FONT)
+        plt.tick_params(axis="y", which="both", pad=4)
+        plt.ylim(0, self.final_df["PASSENGERS_TIMES_10"].max() * 1.05)
+
+        # Bottom text
+        plt.figtext(
+            x=0.01,
+            y=0.01,
+            s="Based on Bureau of Transportation Statistics (BTS) 2024 DB1B tables.\nValues in parentheses represent average daily passengers. An Embraer E175LR seats around 76 passengers.",
+            ha="left",
+            fontfamily=FONT,
+            fontsize=SMALL_FONT_SIZE,
+            fontweight="normal",
+            color="#A7A9AC",
+            wrap=True,
+        )
+
+        # Borders
+        plt.gca().spines["top"].set_visible(False)
+        plt.gca().spines["right"].set_visible(False)
 
         # Show graph
         plt.tight_layout()
+        plt.gcf().subplots_adjust(bottom=0.15)
         plt.show()
 
     def run(self):
