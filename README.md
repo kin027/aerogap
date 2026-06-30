@@ -31,8 +31,8 @@ sudo apt-get install python3-tk
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/kin027/popular-unserved-flight-routes.git)
-cd popular-unserved-flight-routes
+git clone https://github.com/kin027/aerogap.git
+cd aerogap
 ```
 
 2. Create a virtual environment:
@@ -61,7 +61,7 @@ python main.py
 
 ## Data Sources
 
-I sourced data from the Bureau of Transportation Statistics (BTS), a part of the U.S. Department of Transportation. Airlines report their traffic data to the BTS each month.
+I got data from the Bureau of Transportation Statistics (BTS), a part of the U.S. Department of Transportation. Airlines report their traffic data to the BTS each month.
 
 - [BTS DB1B Market table for quarters 1-4 of 2024](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EFI&Yv0x=D) (to get passenger flow data)
 
