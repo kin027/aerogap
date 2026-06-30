@@ -145,7 +145,7 @@ class UnservedMarketAnalyzer:
         SMALL_FONT_SIZE = 12
         MEDIUM_FONT_SIZE = 16
         LARGE_FONT_SIZE = 20
-        FONT = "Helvetica"
+        TYPEFACE = "Helvetica"
 
         # Graph size
         plt.figure(num=GRAPH_TITLE, figsize=(12, 8))
@@ -165,10 +165,10 @@ class UnservedMarketAnalyzer:
             label=GRAPH_TITLE,
             pad=20,
             loc="left",
-            fontfamily=FONT,
+            fontfamily=TYPEFACE,
             fontsize=LARGE_FONT_SIZE,
             fontweight="bold",
-            color="#000",
+            color="#000000",
             wrap=True,
         )
 
@@ -181,9 +181,9 @@ class UnservedMarketAnalyzer:
             + ")",
             label_type="center",
             padding=2,
-            color="#fff",
+            color="#FFFFFF",
             fontsize=SMALL_FONT_SIZE,
-            fontfamily=FONT,
+            fontfamily=TYPEFACE,
         )
 
         # x-axis
@@ -192,10 +192,10 @@ class UnservedMarketAnalyzer:
             labelpad=20,
             loc="center",
             fontsize=MEDIUM_FONT_SIZE,
-            fontfamily=FONT,
+            fontfamily=TYPEFACE,
             wrap=True,
         )
-        plt.xticks(fontsize=SMALL_FONT_SIZE, fontfamily=FONT)
+        plt.xticks(fontsize=SMALL_FONT_SIZE, fontfamily=TYPEFACE)
         plt.tick_params(axis="x", which="both", length=0, pad=8)
 
         # y-axis
@@ -204,10 +204,10 @@ class UnservedMarketAnalyzer:
             labelpad=20,
             loc="center",
             fontsize=MEDIUM_FONT_SIZE,
-            fontfamily=FONT,
+            fontfamily=TYPEFACE,
             wrap=True,
         )
-        plt.yticks(fontsize=SMALL_FONT_SIZE, fontfamily=FONT)
+        plt.yticks(fontsize=SMALL_FONT_SIZE, fontfamily=TYPEFACE)
         plt.tick_params(axis="y", which="both", pad=4)
         plt.ylim(0, self.final_df["PASSENGERS_TIMES_10"].max() * 1.05)
 
@@ -217,7 +217,7 @@ class UnservedMarketAnalyzer:
             y=0.01,
             s="Based on Bureau of Transportation Statistics (BTS) 2024 DB1B tables.\nValues in parentheses represent average daily passengers. An Embraer E175LR seats around 76 passengers.",
             ha="left",
-            fontfamily=FONT,
+            fontfamily=TYPEFACE,
             fontsize=SMALL_FONT_SIZE,
             fontweight="normal",
             color="#A7A9AC",
