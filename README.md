@@ -90,3 +90,7 @@ Obviously there are some limitations that come out of analyzing only two dataset
 - Routes with an airport outside the U.S. are excluded because the DB1B tables only have American airports.
 
 - City pairs with seasonal flights are excluded because they will show up in the T-100 at some point for the year, even if flights are not operated during every month.
+
+## Future Improvement Plans
+
+- When hovering over a bar, showing that airport's city name.
