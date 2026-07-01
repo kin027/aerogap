@@ -8,11 +8,11 @@ A Python tool that analyzes 2024 Bureau of Transportation Statistics (BTS) data 
 
 I'm an avgeek (aviation enthusiast) and data nerd. While I love to take connecting flights even when nonstop service exists ([not too long ago I flew from DFW to ABQ via... ORD!](https://my.flightradar24.com/kin_on_a_plane)), I'm also aware that many passengers are required to connect because no nonstop option is available for them.
 
-As a result, each time I munch on Biscoff cookies on a plane, I always wondered where my fellow passengers connected to or from. (Yes, with free wifi available on most U.S. carriers, I could've cruised through Instagram instead, but this is more interesting.) That curiosity led me to find the tables I used for this (linked below) and identify unserved markets from the airports I frequent.
+As a result, each time I get on a plane and munch on Biscoff cookies, I always wonder where my fellow passengers connect to or from. (Yes, with free wifi available on most U.S. carriers, I could cruise through Instagram instead, but this is more interesting.) That curiosity led me to find the tables I used for this (linked below) and identify unserved markets from the airports I frequent.
 
 ### Key Insights
 
-Running this analysis on my frequented airports revealed interesting unserved markets I hadn't considered. Without this, I never would've known that the top unserved airport from PDX (Portland, OR) is MSY (New Orleans). In 2024, over 39,000 passengers had to connect to reach the Big Easy. 
+Running this analysis on my frequented airports revealed interesting unserved markets I hadn't considered. Without this, I never would've known that the top unserved airport from PDX (Portland, OR) is MSY (New Orleans). In 2024, over 39,000 passengers had to connect to reach the Big Easy.
 
 The difference between a profitable airline and one facing bankruptcy could simply be in network planning. Unserved O/D (origin/destination) pairs like PDX-MSY present significant market opportunities, especially if one end of the route is an airline hub.
 
@@ -22,20 +22,23 @@ As it turns out, one end is! Alaska Airlines makes PDX a hub, and they must have
 
 ## Getting Started
 
-Make sure you have Python 3.13 or higher installed. 
+Make sure you have Python 3.13 or higher installed.
 
 Note for Linux users: You may need to install Tkinter manually if it isn't included in your distro's default Python package:
+
 ```bash
 sudo apt-get install python3-tk
 ```
 
 1. Clone this repository:
+
 ```bash
 git clone https://github.com/kin027/aerogap.git
 cd aerogap
 ```
 
 2. Create a virtual environment:
+
 ```bash
 # Create the environment
 python -m venv venv
@@ -50,11 +53,15 @@ venv\Scripts\activate
 # On Windows (PowerShell):
 .\venv\Scripts\Activate.ps1
 ```
+
 3. Install the dependencies (you don't need to download the data tables themselves as I've already included the final ones in the repo):
+
 ```bash
 pip install -r requirements.txt
 ```
+
 4. Run the program!
+
 ```bash
 python main.py
 ```
@@ -86,7 +93,6 @@ Obviously there are some limitations that come out of analyzing only two dataset
   - 2024 data is analyzed because that is the most recent year with a full year of data.
 
 - The exact passenger count is unknown because the DB1B tables are only a random 10% sample of tickets, so DB1B counts are multiplied by 10 to approximate the actual count.
-    
 - Routes with an airport outside the U.S. are excluded because the DB1B tables only have American airports.
 
 - City pairs with seasonal flights are excluded because they will show up in the T-100 at some point for the year, even if flights are not operated during every month.
