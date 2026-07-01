@@ -8,7 +8,7 @@ A Python tool that analyzes 2024 Bureau of Transportation Statistics (BTS) data 
 
 I'm an avgeek (aviation enthusiast) and data nerd. While I love to take connecting flights even when nonstop service exists ([not too long ago I flew from DFW to ABQ via... ORD!](https://my.flightradar24.com/kin_on_a_plane)), I'm also aware that many passengers are required to connect because no nonstop option is available for them.
 
-As a result, each time I munch on Biscoff cookies on a plane, I always wondered where my fellow passengers connected to or from. (Yes, with free wifi available on most U.S. carriers, I could've cruised through Instagram instead, but this is more interesting.) That curiosity led me to find the tables I used for this (linked below) and visualize unserved markets from the airports I frequent.
+As a result, each time I munch on Biscoff cookies on a plane, I always wondered where my fellow passengers connected to or from. (Yes, with free wifi available on most U.S. carriers, I could've cruised through Instagram instead, but this is more interesting.) That curiosity led me to find the tables I used for this (linked below) and identify unserved markets from the airports I frequent.
 
 ### Key Insights
 
