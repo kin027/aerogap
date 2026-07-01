@@ -6,9 +6,9 @@ A Python tool that analyzes 2024 Bureau of Transportation Statistics (BTS) data 
 
 ### Why I Built This
 
-I'm an avgeek (aviation enthusiast) and data nerd. While I love to take connecting flights even when nonstop service exists ([not too long ago I flew from DFW to ABQ via... ORD!](https://my.flightradar24.com/kin_on_a_plane)), I'm also aware that many passengers are required to connect because no nonstop option was available for them.
+I'm an avgeek (aviation enthusiast) and data nerd. While I love to take connecting flights even when nonstop service exists ([not too long ago I flew from DFW to ABQ via... ORD!](https://my.flightradar24.com/kin_on_a_plane)), I'm also aware that many passengers are required to connect because no nonstop option is available for them.
 
-As a result, each time I step onboard another plane, I always wonder where the other passengers connect to or from. That curiosity drove me to build this tool and explore unserved markets from the airports I frequent.
+As a result, each time I munch on Biscoff cookies on a plane, I always wondered where my fellow passengers connected to or from. (Yes, with free wifi available on most U.S. carriers, I could've cruised through Instagram instead, but this is more interesting.) That curiosity led me to find the tables I used for this (linked below) and visualize unserved markets from the airports I frequent.
 
 ### Key Insights
 
@@ -50,7 +50,7 @@ venv\Scripts\activate
 # On Windows (PowerShell):
 .\venv\Scripts\Activate.ps1
 ```
-3. Install the dependencies (you don't need to download the datasets themselves as I've already included the final ones in the repo):
+3. Install the dependencies (you don't need to download the data tables themselves as I've already included the final ones in the repo):
 ```bash
 pip install -r requirements.txt
 ```
@@ -61,7 +61,7 @@ python main.py
 
 ## Data Sources
 
-I got data from the Bureau of Transportation Statistics (BTS), a part of the U.S. Department of Transportation. Airlines report their traffic data to the BTS each month.
+I downloaded data from the Bureau of Transportation Statistics (BTS), a part of the U.S. Department of Transportation. Airlines report their traffic data to the BTS each month.
 
 - [BTS DB1B Market table for quarters 1-4 of 2024](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EFI&Yv0x=D) (to get passenger flow data)
 
