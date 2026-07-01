@@ -215,7 +215,7 @@ class UnservedMarketAnalyzer:
         plt.figtext(
             x=0.01,
             y=0.01,
-            s="Based on Bureau of Transportation Statistics (BTS) 2024 DB1B tables.\nValues in parentheses represent average daily passengers. An Embraer E175LR seats around 76 passengers.",
+            s="Source: Bureau of Transportation Statistics (BTS).\nValues in parentheses represent average daily passengers. An Embraer E175LR seats around 76 passengers.",
             ha="left",
             fontfamily=TYPEFACE,
             fontsize=SMALL_FONT_SIZE,
