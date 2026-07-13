@@ -99,6 +99,10 @@ Obviously there are some limitations that come out of analyzing only two dataset
 
 ## Future Improvement Plans
 
-- When hovering over a bar, showing that airport's city name.
-
 - Using 2025 data.
+
+- Moving the graph to plotly.
+
+- Filtering the data by month to highlight seasonality.
+
+- Showing the airport name upon hover of a bar.
