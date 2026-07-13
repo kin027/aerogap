@@ -206,14 +206,9 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
-# Ignore the giant quarterly raw DB1B CSVs
-raw_DB1B_tables/DB1B_*.csv
+# Ignore raw DB1Cs
+DB1C_tables/*.parquet
+raw_DB1B_tables/*.csv
 
 # Ignore Mac system junk
 .DS_Store
-
-# Ensure the DB1B file combiner script is tracked
-!raw_DB1B_tables/DB1B_table_merger.py
-
-# Ensure the final output and T100 are tracked
-!datasets/*.csv
