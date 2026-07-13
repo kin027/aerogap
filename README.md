@@ -70,9 +70,9 @@ python main.py
 
 I downloaded data from the Bureau of Transportation Statistics (BTS), a part of the U.S. Department of Transportation. Airlines report their traffic data to the BTS each month.
 
-- [BTS Origin and Destination Survey (O&D DB1B) Market table for quarters 1-4 of 2024](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EFI&Yv0x=D) (to get passenger flow data)
+- [BTS Airline Origin and Destination Survey (DB1B) Market table](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EFI&Yv0x=D) for quarters 1-4 of 2024 (to get passenger flow data)
 
-- [BTS T-100 Segment (All Carriers) table for all of 2024](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EEE) with DepScheduled, Passengers, UniqueCarrierName, Origin, Dest, Year, Class fields (to identify airport pairs connected with a nonstop flight)
+- [BTS Air Carrier Statistics (Form 41 Traffic) - All Carriers (T-100) table](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EEE) for all of 2024 with DepScheduled, Passengers, UniqueCarrierName, Origin, Dest, Year, Class fields (to identify airport pairs connected with a nonstop flight)
 
 ## Libraries Used
 
