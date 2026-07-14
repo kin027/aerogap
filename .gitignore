@@ -212,6 +212,3 @@ raw_DB1B_tables/*.csv
 
 # Ignore Mac system junk
 .DS_Store
-
-# Temporarily ignore README.md
-README.md
