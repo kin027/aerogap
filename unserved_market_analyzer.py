@@ -1,32 +1,88 @@
 import pandas as pd
-import matplotlib
-
-matplotlib.use("TkAgg")
-import matplotlib.pyplot as plt
-import tkinter
+from tkinter import *
 from tkinter import simpledialog, messagebox
+from dash import Dash, dcc, html, Input, Output
+import plotly.express as px
+import calendar
+import webview
+import threading
 
 TITLE = "AeroGap"
 
 
 class UnservedMarketAnalyzer:
-    def __init__(self, db1b_path, t100_path):
-        # Set up DB1B and T-100 attributes
-        self.DB1B_df = pd.DataFrame()
-        self.T100_df = pd.DataFrame()
-        self.DB1B_path = db1b_path
-        self.T100_path = t100_path
+    def __init__(self, db1c_path, t100_path, airports_path):
+        # Set up DB1C and T-100 attributes
+        self.original_db1c_df = pd.read_csv(db1c_path).rename(
+            columns={
+                "SchFlYear": "YEAR",
+                "SchFlMonth": "MONTH",
+                "Origin": "ORIGIN",
+                "Dest": "DEST",
+                "Passengers": "PASSENGERS",
+            }
+        )
+        self.original_t100_df = pd.read_csv(t100_path)
+        self.airports_df = pd.read_csv(
+            airports_path, usecols=["name", "iata_code"]
+        ).rename(columns={"iata_code": "DEST", "name": "DEST_CITY_NAME"})
 
-        # Create new Tkinter window then withdraw it
-        self.window = tkinter.Tk()
+        # Tkinter window followed by withdrawal
+        self.window = Tk()
         self.window.withdraw()
 
-        # Set attributes for original airport and final dataframe
+        # Attributes to be filled out in later methods
         self.origin_airport = None
-        self.final_df = None
+        self.copy_t100_df = None
+        self.copy_db1c_df = None
+
+        # Interactive graph
+        self.app = Dash(__name__)
+        self.register_callbacks()
+        self.timeline = []
+
+    # Method to read all CSVs and perform basic data cleaning
+    def read_csvs(self):
+        # First, clean T-100 table
+
+        # Drop NA values
+        self.original_t100_df = self.original_t100_df.dropna()
+
+        # Filter T-100 so that DEPARTURES_SCHEDULED > 0 (exclude diversions, etc.)
+        self.original_t100_df = self.original_t100_df[
+            self.original_t100_df["DEPARTURES_SCHEDULED"] > 0
+        ]
+
+        # Filter T-100 so that PASSENGERS > 0 (exclude cargo)
+        self.original_t100_df = self.original_t100_df[
+            self.original_t100_df["PASSENGERS"] > 0
+        ]
+
+        # Filter T-100 so that CLASS is "F" (Scheduled Passenger/ Cargo Service F) (exclude non-scheduled flights)
+        self.original_t100_df = self.original_t100_df[
+            self.original_t100_df["CLASS"] == "F"
+        ]
+
+        # Remove duplicate rows with same criteria
+        self.original_t100_df = self.original_t100_df.drop_duplicates(
+            subset=["YEAR", "MONTH", "ORIGIN", "DEST", "DEST_CITY_NAME"]
+        )
+
+        # Second, clean DB1C
+
+        # Drop NA values
+        self.original_db1c_df = self.original_db1c_df.dropna()
+
+        # Filter down to year 2025
+        self.original_db1c_df = self.original_db1c_df[
+            (self.original_db1c_df["YEAR"] == 2025)
+            & (self.original_db1c_df["MONTH"] >= 7)
+        ]
 
     # Method to get and validate airport code from user
     def get_origin_airport(self):
+        result = None
+
         # Ask user for airport code
         origin_airport = simpledialog.askstring(
             title=TITLE,
@@ -38,19 +94,15 @@ class UnservedMarketAnalyzer:
             # Convert user input to uppercase
             origin_airport = origin_airport.upper()
 
-            # Read CSVs
-            self.DB1B_df = pd.read_csv(self.DB1B_path)
-            self.T100_df = pd.read_csv(self.T100_path)
-
             # Get a set of valid origin airport codes
-            valid_origin_airports = set(self.DB1B_df["ORIGIN"].unique())
+            valid_origin_airports = set(self.original_db1c_df["ORIGIN"].unique())
 
             # Validate user-entered origin airport
             if origin_airport in valid_origin_airports:  # Valid airport
                 # Set origin_airport attribute to result
                 self.origin_airport = origin_airport
 
-                return True
+                result = "VALID"
             else:  # Invalid airport
                 # Display message box for error message
                 messagebox.showerror(
@@ -58,190 +110,305 @@ class UnservedMarketAnalyzer:
                     "air service, or is not in the U.S.",
                     title=TITLE,
                 )
-                return False
+                result = "INVALID"
         else:
-            return False
+            result = "EXIT"
 
-    # Method to analyze data tables
-    def analyze_data_tables(self):
-        # First, clean T-100 table
+        return result
 
-        # Drop NA values
-        self.T100_df = self.T100_df.dropna()
+    # Method to analyze routes
+    def analyze_routes(self):
+        # Create copies
+        self.copy_db1c_df = self.original_db1c_df.copy()
+        self.copy_t100_df = self.original_t100_df.copy()
 
-        # Filter T-100 so that DEPARTURES_SCHEDULED > 0 (exclude diversions, etc.)
-        self.T100_df = self.T100_df[self.T100_df["DEPARTURES_SCHEDULED"] > 0]
+        # Filter both dfs to rows where ORIGIN is same as user input
+        self.copy_t100_df = self.copy_t100_df[
+            self.copy_t100_df["ORIGIN"] == self.origin_airport
+        ]
+        self.copy_db1c_df = self.copy_db1c_df[
+            self.copy_db1c_df["ORIGIN"] == self.origin_airport
+        ]
 
-        # Filter T-100 so that PASSENGERS > 0 (exclude cargo)
-        self.T100_df = self.T100_df[self.T100_df["PASSENGERS"] > 0]
+        # Create new columns in DB1C
 
-        # Filter T-100 so that CLASS is "F" (Scheduled Passenger/ Cargo Service F) (exclude non-scheduled flights)
-        self.T100_df = self.T100_df[self.T100_df["CLASS"] == "F"]
-
-        # Keep only the ORIGIN and DEST columns in T-100
-        self.T100_df = self.T100_df[["ORIGIN", "DEST"]].copy()
-
-        # Filter T100_df down to rows where ORIGIN is same as user input
-        self.T100_df = self.T100_df[self.T100_df["ORIGIN"] == self.origin_airport]
-
-        # Remove duplicate rows (same routes)
-        self.T100_df = self.T100_df.drop_duplicates()
-
-        # Second, clean DB1B table
-
-        # Drop NA values
-        self.DB1B_df = self.DB1B_df.dropna()
-
-        # Filter DB1B_df down to rows where origin airport is same as user input
-        self.DB1B_df = self.DB1B_df[
-            self.DB1B_df["ORIGIN"] == self.origin_airport
-        ].copy()
-
-        # Create new column that multiplies passenger counts by 10, as DB1B is a 10% sample of tickets
-        self.DB1B_df["PASSENGERS_TIMES_10"] = self.DB1B_df["PASSENGERS"] * 10
-
-        # Create new column that calculates the passengers daily by dividing the PASSENGERS_TIMES_100 column by 365 and
-        # round to 2 decimal places
-        self.DB1B_df["PASSENGERS_DAILY"] = (
-            self.DB1B_df["PASSENGERS_TIMES_10"] / 365
-        ).round(2)
-
-        # Sort the df by passenger counts, highest to lowest, using merge sort
-        self.DB1B_df = self.DB1B_df.sort_values(
-            by="PASSENGERS_TIMES_10", ascending=False, kind="mergesort"
+        # Create mew MONTH_NAME field for month name
+        self.copy_db1c_df["MONTH_NAME"] = self.copy_db1c_df["MONTH"].map(
+            lambda x: calendar.month_name[x]
         )
 
-        # Create a new column of boolean values in self.DB1B_df that indicates whether a route has a nonstop
-        # flight by cross-checking with T100_df, which indicates whether a nonstop flight exists
-        self.DB1B_df["HAS_NONSTOP_FLIGHT"] = self.DB1B_df["DEST"].isin(
-            self.T100_df["DEST"]
+        # Set self.timeline
+        temp_df = self.copy_db1c_df.drop_duplicates(subset=["YEAR", "MONTH"])
+        temp_df = temp_df.sort_values(by=["YEAR", "MONTH"], ascending=True)
+        self.timeline = [
+            (row.YEAR, row.MONTH, row.MONTH_NAME) for row in temp_df.itertuples()
+        ]
+
+        # Create new column that multiplies passenger counts by 2.5, as DB1C is a 40% sample of tickets
+        self.copy_db1c_df["SCALED_PASSENGERS"] = self.copy_db1c_df["PASSENGERS"] * 2.5
+
+        # Get number of days in a month
+        days_in_month = pd.to_datetime(
+            self.copy_db1c_df[["YEAR", "MONTH"]].assign(DAY=1)
+        ).dt.days_in_month
+
+        # Create new column that calculates the passengers daily by dividing SCALED_PASSENGERS column by the number of days in the month and
+        # round to 2 decimal places
+        self.copy_db1c_df["PASSENGERS_DAILY"] = (
+            self.copy_db1c_df["SCALED_PASSENGERS"] / days_in_month
+        ).round(2)
+
+        # Round SCALED_PASSENGERS
+        self.copy_db1c_df["SCALED_PASSENGERS"] = self.copy_db1c_df[
+            "SCALED_PASSENGERS"
+        ].astype("int64")
+
+        # Sort by passenger counts
+        self.copy_db1c_df = self.copy_db1c_df.sort_values(
+            by="SCALED_PASSENGERS", ascending=False
+        )
+
+        # Create new column of boolean values that indicates whether a route has a nonstop flight by cross-checking with t100_df, which indicates whether a nonstop flight exists
+        self.copy_db1c_df["HAS_NONSTOP_FLIGHT"] = self.copy_db1c_df["DEST"].isin(
+            self.copy_t100_df["DEST"]
+        )
+
+        # Create new column for bar text
+        self.copy_db1c_df["BAR_TEXT"] = (
+            self.copy_db1c_df["SCALED_PASSENGERS"].astype(str)
+            + "<br>("
+            + self.copy_db1c_df["PASSENGERS_DAILY"].astype(str)
+            + ")"
+        )
+
+        # Create new column for destination airport names
+        t100_reference = self.copy_t100_df[["DEST", "DEST_CITY_NAME"]].drop_duplicates(
+            subset=["DEST"]
+        )
+
+        # Merge city names into db1c
+        self.copy_db1c_df = self.copy_db1c_df.merge(
+            self.airports_df, on="DEST", how="left"
         )
 
         # Now do the magic
 
         # Filter to routes without nonstop flights
-        self.DB1B_df = self.DB1B_df[self.DB1B_df["HAS_NONSTOP_FLIGHT"] == False]
-
-        # Grab first 10 rows
-        self.DB1B_df = self.DB1B_df.head(10)
+        self.copy_db1c_df = self.copy_db1c_df[
+            self.copy_db1c_df["HAS_NONSTOP_FLIGHT"] == False
+        ]
 
         # Deal with edge case where filtered df might be empty
-        if not self.DB1B_df.empty:
-            self.final_df = self.DB1B_df
+        if not self.copy_db1c_df.empty:
             return True
         else:
             messagebox.showerror(
-                message=f"No passengers from {self.origin_airport} connected to an onward flight.\n\n(This "
+                message=f"No passengers from {self.origin_airport} connected to an onward flight during the period of the data.\n\n(This "
                 f"is common with airports served exclusively by a budget airline that does "
                 f"not sell connecting itineraries.)",
                 title=TITLE,
             )
             return False
 
-    # Method to create and show the graph
-    def create_graph(self):
-        # Constants for graph
-        GRAPH_TITLE = f"Top Domestic Unserved Markets from {self.origin_airport} by Passenger Volume (2024)"
-        SMALL_FONT_SIZE = 12
-        MEDIUM_FONT_SIZE = 16
-        LARGE_FONT_SIZE = 20
-        TYPEFACE = "Helvetica"
+    # Method to construct and return layout tree
+    def build_layout(self):
+        return html.Div(
+            # Overall style
+            style={
+                "display": "flex",
+                "flexDirection": "column",
+                "height": "98vh",
+                "padding": "10px",
+                "fontFamily": "Helvetica",
+            },
+            children=[
+                # Div for graph
+                html.Div(
+                    dcc.Graph(
+                        id="graph",
+                        style={
+                            "height": "100%",
+                            "width": "100%",
+                        },
+                    ),
+                    style={"flex": "3"},
+                ),
+                # Div for slider
+                html.Div(
+                    dcc.Slider(
+                        min=0,
+                        max=len(self.timeline) - 1,
+                        step=1,
+                        value=0,
+                        marks={
+                            i: f"{time[2]} {time[0]}"
+                            for i, time in enumerate(self.timeline)
+                        },
+                        id="slider",
+                        tooltip={"placement": "bottom", "always_visible": False},
+                        updatemode="drag",
+                        allow_direct_input=False,  # Hide input box
+                        included=False,
+                    ),
+                    style={
+                        "flex": "1",
+                        "paddingLeft": "50px",
+                        "paddingRight": "50px",
+                        "marginTop": "50px",
+                    },
+                ),
+                # Div for bottom data source note
+                html.Div(
+                    [
+                        "Source: Bureau of Transportation Statistics (BTS).",
+                        html.Br(),
+                        "Below each monthly passenger count in parentheses is the average daily passenger count. An Embraer E175LR typically seats 76 passengers.",
+                    ],
+                    style={
+                        "fontSize": "18px",
+                        "color": "#A7A9AC",
+                        "paddingBottom": "10px",
+                        "paddingLeft": "10px",
+                    },
+                ),
+            ],
+        )
 
-        # Graph size
-        plt.figure(num=GRAPH_TITLE, figsize=(12, 8))
+    # Method to update map whenever slider is moved
+    def register_callbacks(self):
+        @self.app.callback(
+            Output("graph", "figure"),
+            Input("slider", "value"),
+        )
+        def update(slider_val):
+            return self.update_graph(slider_val)
+
+    def update_graph(self, slider_position):
+        # Constants for graph
+        TYPEFACE = "Helvetica"
+        HOVER_FONT_SIZE = 12
+        AXES_LABELS_FONT_SIZE = 18
+        AXES_TITLE_FONT_SIZE = 24
+        TITLE_FONT_SIZE = 36
+        LINE_WIDTH = 1
+        TITLE_COLOR = "#000000"
+        BAR_COLOR = "#0039A6"
+
+        # Get year and month from timeline position
+        target_year, target_month, target_month_name = self.timeline[slider_position]
+
+        # Create dest_df, which is source of info for all routes and is filtered by month and year
+        temp_df = self.copy_db1c_df[
+            (self.copy_db1c_df["YEAR"] == target_year)
+            & (self.copy_db1c_df["MONTH"] == target_month)
+        ].head(10)
 
         # Create graph
-        graph = plt.bar(
-            x=self.final_df.DEST,
-            height=self.final_df.PASSENGERS_TIMES_10,
-            color="#0039a6",
+        display_graph = px.bar(
+            temp_df,
+            x="DEST",
+            y="SCALED_PASSENGERS",
+            labels={
+                "DEST": "Destination Airport",
+                "SCALED_PASSENGERS": "Passengers (Scaled 40% Sample)",
+            },
+            title=f"Top Domestic Unserved Markets from {self.origin_airport} in {target_month_name} {target_year}",
+            hover_data=["DEST_CITY_NAME"],
+            color_discrete_sequence=[BAR_COLOR],
+            text="BAR_TEXT",
         )
 
-        # Format graph
-
-        # Title
-
-        plt.title(
-            label=GRAPH_TITLE,
-            pad=20,
-            loc="left",
-            fontfamily=TYPEFACE,
-            fontsize=LARGE_FONT_SIZE,
-            fontweight="bold",
-            color="#000000",
-            wrap=True,
+        # Update traces
+        display_graph.update_traces(
+            hovertemplate="%{customdata[0]}<extra></extra>",
+            textposition="inside",
+            textfont=dict(
+                family=TYPEFACE,
+                size=AXES_LABELS_FONT_SIZE,
+                color="#FFFFFF",  # Ensures readability inside colored bars
+            ),
         )
 
-        # In-bar labels
-        plt.bar_label(
-            container=graph,
-            labels=self.final_df.PASSENGERS_TIMES_10.map(int).astype(str)
-            + "\n("
-            + self.final_df.PASSENGERS_DAILY.map(float).astype(str)
-            + ")",
-            label_type="center",
-            padding=2,
-            color="#FFFFFF",
-            fontsize=SMALL_FONT_SIZE,
-            fontfamily=TYPEFACE,
+        # Change general map layout
+        display_graph.update_layout(
+            margin_l=200,
+            plot_bgcolor="white",
+            font=dict(family=TYPEFACE, color=TITLE_COLOR),
+            title=dict(font=dict(size=TITLE_FONT_SIZE)),
+            xaxis=dict(
+                ticks="",
+                title=dict(
+                    font=dict(size=AXES_TITLE_FONT_SIZE),
+                    standoff=AXES_TITLE_FONT_SIZE * 2,
+                ),
+                tickfont=dict(size=AXES_LABELS_FONT_SIZE),
+                showline=True,
+                linecolor=TITLE_COLOR,
+                linewidth=LINE_WIDTH,
+            ),
+            yaxis=dict(
+                title=dict(
+                    font=dict(size=AXES_TITLE_FONT_SIZE),
+                    standoff=AXES_TITLE_FONT_SIZE * 2,
+                ),
+                tickfont=dict(size=AXES_LABELS_FONT_SIZE),
+                ticks="outside",
+                tickcolor=TITLE_COLOR,
+                tickwidth=LINE_WIDTH,
+                showline=True,
+                linecolor=TITLE_COLOR,
+                linewidth=LINE_WIDTH,
+            ),
+            hovermode="closest",
+            hoverdistance=30,
+            hoverlabel=dict(
+                font=dict(
+                    size=HOVER_FONT_SIZE,
+                )
+            ),
+            transition_duration=200,
+            height=None,
         )
 
-        # x-axis
-        plt.xlabel(
-            "Destination Airport",
-            labelpad=20,
-            loc="center",
-            fontsize=MEDIUM_FONT_SIZE,
-            fontfamily=TYPEFACE,
-            wrap=True,
-        )
-        plt.xticks(fontsize=SMALL_FONT_SIZE, fontfamily=TYPEFACE)
-        plt.tick_params(axis="x", which="both", length=0, pad=8)
+        return display_graph
 
-        # y-axis
-        plt.ylabel(
-            "Estimated Annual Passengers (Scaled 10% Sample)",
-            labelpad=20,
-            loc="center",
-            fontsize=MEDIUM_FONT_SIZE,
-            fontfamily=TYPEFACE,
-            wrap=True,
-        )
-        plt.yticks(fontsize=SMALL_FONT_SIZE, fontfamily=TYPEFACE)
-        plt.tick_params(axis="y", which="both", pad=4)
-        plt.ylim(0, self.final_df["PASSENGERS_TIMES_10"].max() * 1.05)
-
-        # Bottom text
-        plt.figtext(
-            x=0.01,
-            y=0.01,
-            s="Source: Bureau of Transportation Statistics (BTS).\nValues in parentheses represent average daily passengers. An Embraer E175LR seats around 76 passengers.",
-            ha="left",
-            fontfamily=TYPEFACE,
-            fontsize=SMALL_FONT_SIZE,
-            fontweight="normal",
-            color="#A7A9AC",
-            wrap=True,
+    # Method to show the graph
+    def show_graph(self):
+        # Open Dash server
+        server_thread = threading.Thread(
+            target=self.app.run,
+            kwargs={"debug": False, "port": 8050, "use_reloader": False},
+            daemon=True,
         )
 
-        # Borders
-        plt.gca().spines["top"].set_visible(False)
-        plt.gca().spines["right"].set_visible(False)
+        server_thread.start()
 
-        # Show graph
-        plt.tight_layout()
-        plt.gcf().subplots_adjust(bottom=0.15)
-        plt.show()
+        # Show window for graph
+        webview.create_window(title=TITLE, url="http://127.0.0.1:8050/", maximized=True)
+        webview.start()
 
+    # Method to run all previous methods
     def run(self):
-        # Call get_origin_airport method
-        if self.get_origin_airport():
+        # Read CSVs
+        self.read_csvs()
 
-            # Call analyze_data_tables method
-            if self.analyze_data_tables():
+        result = None
 
-                # Call create_graph method
-                self.create_graph()
+        # While the result of the function has something
+        while result != "EXIT":
+            # Get origin airport
+            result = self.get_origin_airport()
 
-        # Destroy the window
+            if result == "VALID":
+                # Analyze routes
+                df_has_content = self.analyze_routes()
+
+                if df_has_content:
+                    # Build map layout
+                    self.app.layout = self.build_layout()
+
+                    # Show map
+                    self.show_graph()
+
+        # Destroy Tkinter window
         self.window.destroy()

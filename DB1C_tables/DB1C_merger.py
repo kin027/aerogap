@@ -9,17 +9,9 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 file_pattern = os.path.join(script_dir, "*.parquet")
 file_list = glob.glob(file_pattern)
 
-db1c_list = []
+# Fill list
 target_column_list = ["SchFlYear", "SchFlMonth", "Origin", "Dest", "Passengers"]
-
-for file in file_list:
-    print(f"Processing {os.path.basename(file)}...")
-
-    # Convert to a DataFrame
-    single_df = pd.read_parquet(file, columns=target_column_list)
-
-    # Append to array
-    db1c_list.append(single_df)
+db1c_list = [pd.read_parquet(file, columns=target_column_list) for file in file_list]
 
 # Concatenate each df in the db1c_list array
 db1c_df = pd.concat(db1c_list)
@@ -30,6 +22,13 @@ db1c_df = (
     .sum()
     .reset_index()
 )
+
+# Convert floats to int64 data type
+db1c_df[["SchFlYear", "SchFlMonth", "Passengers"]] = db1c_df[
+    ["SchFlYear", "SchFlMonth", "Passengers"]
+].astype("int64")
+
+print(db1c_df.dtypes)
 
 # Set the output path for the final csv
 output_path = os.path.join(script_dir, "..", "final_db1c.csv")

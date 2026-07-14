@@ -208,7 +208,6 @@ __marimo__/
 
 # Ignore raw DB1Cs
 DB1C_tables/*.parquet
-raw_DB1B_tables/*.csv
 
 # Ignore Mac system junk
 .DS_Store
