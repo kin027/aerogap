@@ -53,9 +53,9 @@ class UnservedMarketAnalyzer:
             self.original_t100_df["DEPARTURES_SCHEDULED"] > 0
         ]
 
-        # Filter T-100 so that PASSENGERS > 0 (exclude cargo)
+        # Filter T-100 so that SEATS > 0 (exclude cargo)
         self.original_t100_df = self.original_t100_df[
-            self.original_t100_df["PASSENGERS"] > 0
+            self.original_t100_df["SEATS"] > 0
         ]
 
         # Filter T-100 so that CLASS is "F" (Scheduled Passenger/ Cargo Service F) (exclude non-scheduled flights)
@@ -65,7 +65,7 @@ class UnservedMarketAnalyzer:
 
         # Remove duplicate rows with same criteria
         self.original_t100_df = self.original_t100_df.drop_duplicates(
-            subset=["YEAR", "MONTH", "ORIGIN", "DEST", "DEST_CITY_NAME"]
+            subset=["YEAR", "MONTH", "ORIGIN", "DEST"]
         )
 
         # Second, clean DB1C
@@ -179,11 +179,6 @@ class UnservedMarketAnalyzer:
             + "<br>("
             + self.copy_db1c_df["PASSENGERS_DAILY"].astype(str)
             + ")"
-        )
-
-        # Create new column for destination airport names
-        t100_reference = self.copy_t100_df[["DEST", "DEST_CITY_NAME"]].drop_duplicates(
-            subset=["DEST"]
         )
 
         # Merge city names into db1c
