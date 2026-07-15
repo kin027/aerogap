@@ -74,7 +74,13 @@ class UnservedMarketAnalyzer:
         self.original_db1c_df = self.original_db1c_df.dropna()
 
         # Create date filter
-        data_filter = ((self.original_db1c_df["YEAR"] == 2026) & (self.original_db1c_df["MONTH"] <= 3)) | ((self.original_db1c_df["YEAR"] == 2025) & (self.original_db1c_df["MONTH"] >= 7))
+        data_filter = (
+            (self.original_db1c_df["YEAR"] == 2026)
+            & (self.original_db1c_df["MONTH"] <= 3)
+        ) | (
+            (self.original_db1c_df["YEAR"] == 2025)
+            & (self.original_db1c_df["MONTH"] >= 7)
+        )
 
         # Filter down data filter
         self.original_db1c_df = self.original_db1c_df[data_filter]
@@ -168,11 +174,6 @@ class UnservedMarketAnalyzer:
             by="SCALED_PASSENGERS", ascending=False
         )
 
-        # Create new column of boolean values that indicates whether a route has a nonstop flight by cross-checking with t100_df, which indicates whether a nonstop flight exists
-        self.copy_db1c_df["HAS_NONSTOP_FLIGHT"] = self.copy_db1c_df["DEST"].isin(
-            self.copy_t100_df["DEST"]
-        )
-
         # Create new column for bar text
         self.copy_db1c_df["BAR_TEXT"] = (
             self.copy_db1c_df["SCALED_PASSENGERS"].astype(str)
@@ -186,24 +187,17 @@ class UnservedMarketAnalyzer:
             self.airports_df, on="DEST", how="left"
         )
 
-        # Now do the magic
-
-        # Filter to routes without nonstop flights
-        self.copy_db1c_df = self.copy_db1c_df[
-            self.copy_db1c_df["HAS_NONSTOP_FLIGHT"] == False
-        ]
-
         # Deal with edge case where filtered df might be empty
-        if not self.copy_db1c_df.empty:
-            return True
-        else:
-            messagebox.showerror(
-                message=f"No passengers from {self.origin_airport} connected to an onward flight during the period of the data.\n\n(This "
-                f"is common with airports served exclusively by a budget airline that does "
-                f"not sell connecting itineraries.)",
-                title=TITLE,
-            )
-            return False
+        # if not self.copy_db1c_df.empty:
+        #     return True
+        # else:
+        #     messagebox.showerror(
+        #         message=f"No passengers from {self.origin_airport} connected to an onward flight during the period of the data.\n\n(This "
+        #         f"is common with airports served exclusively by a budget airline that does "
+        #         f"not sell connecting itineraries.)",
+        #         title=TITLE,
+        #     )
+        #     return False
 
     # Method to construct and return layout tree
     def build_layout(self):
@@ -292,15 +286,29 @@ class UnservedMarketAnalyzer:
         # Get year and month from timeline position
         target_year, target_month, target_month_name = self.timeline[slider_position]
 
-        # Create dest_df, which is source of info for all routes and is filtered by month and year
-        temp_df = self.copy_db1c_df[
+        # Create temp_db1c_df, which is source of info for all tickets and is filtered by month and year
+        temp_db1c_df = self.copy_db1c_df[
             (self.copy_db1c_df["YEAR"] == target_year)
             & (self.copy_db1c_df["MONTH"] == target_month)
-        ].head(10)
+        ]
+
+        # Create temp_t100_df, which is source of info for all routes and is filtered by month and year
+        temp_t100_df = self.copy_t100_df[
+            (self.copy_t100_df["YEAR"] == target_year)
+            & (self.copy_t100_df["MONTH"] == target_month)
+        ]
+
+        # Create new column of boolean values that indicates whether a route has a nonstop flight by cross-checking with t100_df, which indicates whether a nonstop flight exists
+        temp_db1c_df["HAS_NONSTOP_FLIGHT"] = temp_db1c_df["DEST"].isin(
+            temp_t100_df["DEST"]
+        )
+
+        # Filter to top 10 routes without nonstop flights
+        temp_db1c_df = temp_db1c_df[temp_db1c_df["HAS_NONSTOP_FLIGHT"] == False].head(10)
 
         # Create graph
         display_graph = px.bar(
-            temp_df,
+            temp_db1c_df,
             x="DEST",
             y="SCALED_PASSENGERS",
             labels={
@@ -396,14 +404,13 @@ class UnservedMarketAnalyzer:
 
             if result == "VALID":
                 # Analyze routes
-                df_has_content = self.analyze_routes()
+                self.analyze_routes()
 
-                if df_has_content:
-                    # Build map layout
-                    self.app.layout = self.build_layout()
+                # Build map layout
+                self.app.layout = self.build_layout()
 
-                    # Show map
-                    self.show_graph()
+                # Show map
+                self.show_graph()
 
         # Destroy Tkinter window
         self.window.destroy()

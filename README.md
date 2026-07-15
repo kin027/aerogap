@@ -88,7 +88,7 @@ While more data is good for me to play around with, it's probably not good for m
 
 - dash (to make the graph interactive with the slider)
 
-- pywebview (to open a new window to show the graph on)
+- pywebview (to open a new window to show the graph in)
 
 - Tkinter (to create the GUI)
 
