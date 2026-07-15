@@ -48,22 +48,22 @@ class UnservedMarketAnalyzer:
         # Drop NA values
         self.original_t100_df = self.original_t100_df.dropna()
 
-        # Filter T-100 so that DEPARTURES_SCHEDULED > 0 (exclude diversions, etc.)
+        # Drop unscheduled departures such as diversions
         self.original_t100_df = self.original_t100_df[
             self.original_t100_df["DEPARTURES_SCHEDULED"] > 0
         ]
 
-        # Filter T-100 so that SEATS > 0 (exclude cargo)
+        # Drop non-passenger flights
         self.original_t100_df = self.original_t100_df[
             self.original_t100_df["SEATS"] > 0
         ]
 
-        # Filter T-100 so that CLASS is "F" (Scheduled Passenger/ Cargo Service F) (exclude non-scheduled flights)
+        # Drop non-scheduled flights (Scheduled Passenger/ Cargo Service is F)
         self.original_t100_df = self.original_t100_df[
             self.original_t100_df["CLASS"] == "F"
         ]
 
-        # Remove duplicate rows with same criteria
+        # Drop duplicate rows
         self.original_t100_df = self.original_t100_df.drop_duplicates(
             subset=["YEAR", "MONTH", "ORIGIN", "DEST"]
         )
@@ -73,8 +73,11 @@ class UnservedMarketAnalyzer:
         # Drop NA values
         self.original_db1c_df = self.original_db1c_df.dropna()
 
+        # Drop same city market origin and destination, aka coterminals
+        self.original_db1c_df = self.original_db1c_df[self.original_db1c_df["OriginCityMarketID"] != self.original_db1c_df["DestCityMarketID"]]
+
         # Create date filter
-        data_filter = (
+        date_filter = (
             (self.original_db1c_df["YEAR"] == 2026)
             & (self.original_db1c_df["MONTH"] <= 3)
         ) | (
@@ -82,8 +85,8 @@ class UnservedMarketAnalyzer:
             & (self.original_db1c_df["MONTH"] >= 7)
         )
 
-        # Filter down data filter
-        self.original_db1c_df = self.original_db1c_df[data_filter]
+        # Drop rows not in date filter
+        self.original_db1c_df = self.original_db1c_df[date_filter]
 
     # Method to get and validate airport code from user
     def get_origin_airport(self):
@@ -117,7 +120,7 @@ class UnservedMarketAnalyzer:
                     title=TITLE,
                 )
                 result = "INVALID"
-        else:
+        else: # No response
             result = "EXIT"
 
         return result
@@ -186,18 +189,6 @@ class UnservedMarketAnalyzer:
         self.copy_db1c_df = self.copy_db1c_df.merge(
             self.airports_df, on="DEST", how="left"
         )
-
-        # Deal with edge case where filtered df might be empty
-        # if not self.copy_db1c_df.empty:
-        #     return True
-        # else:
-        #     messagebox.showerror(
-        #         message=f"No passengers from {self.origin_airport} connected to an onward flight during the period of the data.\n\n(This "
-        #         f"is common with airports served exclusively by a budget airline that does "
-        #         f"not sell connecting itineraries.)",
-        #         title=TITLE,
-        #     )
-        #     return False
 
     # Method to construct and return layout tree
     def build_layout(self):

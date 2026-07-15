@@ -10,14 +10,14 @@ file_pattern = os.path.join(script_dir, "*.parquet")
 file_list = glob.glob(file_pattern)
 
 # Fill db1c_list
-target_column_list = ["SchFlYear", "SchFlMonth", "Origin", "Dest", "Passengers"]
+target_column_list = ["SchFlYear", "SchFlMonth", "Origin", "OriginCityMarketID", "Dest", "DestCityMarketID", "Passengers"]
 db1c_list = [pd.read_parquet(file, columns=target_column_list) for file in file_list]
 
 # Concatenate each df in db1c_list
 db1c_df = pd.concat(db1c_list)
 
 # Sum up passenger counts for a unique route (doing this here or else the final file would be huge)
-db1c_df = db1c_df.groupby(["SchFlYear", "SchFlMonth", "Origin", "Dest"])[
+db1c_df = db1c_df.groupby(["SchFlYear", "SchFlMonth", "Origin", "OriginCityMarketID", "Dest", "DestCityMarketID"])[
     "Passengers"].sum().reset_index()
 
 # Convert floats to int64 data type
