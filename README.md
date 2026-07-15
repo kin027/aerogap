@@ -2,7 +2,7 @@
 
 ## Overview
 
-A Python tool that analyzes 2025 Bureau of Transportation Statistics (BTS) data to identify unserved airline markets with high passenger demand.
+A Python tool that analyzes 2025-2026 Bureau of Transportation Statistics (BTS) data to identify unserved airline markets with high passenger demand.
 
 ### Why I Built This
 
@@ -12,7 +12,7 @@ This reality hits me every time I look around the cabin while munching on my obl
 
 ### Key Insights
 
-Running this analysis on airports around the Pacific Northwest, where I'm from, revealed interesting unserved markets I hadn't considered. Without this, I never would've known that the top domestic unserved airport from Boise (BOI) in December 2025 was Honolulu (HNL). In December 2025, an estimated 1787 passengers, or a daily average just shy of 58 passengers, connected to get to O'ahu.
+Running this analysis on airports around the Pacific Northwest, where I'm from, revealed interesting unserved markets I hadn't considered. Without this, I never would've known that the top domestic unserved airport from Boise (BOI) in December 2025 was Honolulu (HNL). During that period, an estimated 1787 passengers, or a daily average just shy of 58 passengers, connected to get to O'ahu.
 
 The difference between a profitable airline and one facing bankruptcy could simply be in network planning. Unserved O&D (origin and destination) pairs like BOI-HNL present significant market opportunities, especially if one end of the route is an airline hub.
 
@@ -68,9 +68,9 @@ python main.py
 
 I downloaded data from the Bureau of Transportation Statistics (BTS), a part of the U.S. Department of Transportation. Airlines report their traffic data to the BTS each month.
 
-- [BTS Airline Origin and Destination Survey (DB1C) Market table](https://www.bts.gov/topics/airlines-and-airports/origin-and-destination-survey-data-market) for July-December 2025 (to get passenger flow data)
+- [BTS Airline Origin and Destination Survey (DB1C) Market table](https://www.bts.gov/topics/airlines-and-airports/origin-and-destination-survey-data-market) for July 2025 to March 2026 (to get passenger flow data)
 
-- [BTS Air Carrier Statistics (Form 41 Traffic) T-100 Domestic Segment (All Carriers) table](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EEE) for all of 2025 with DepScheduled, Seats, Origin, Dest, Year, Month, Class fields (to identify airport pairs connected with a nonstop flight)
+- [BTS Air Carrier Statistics (Form 41 Traffic) T-100 Domestic Segment (All Carriers) table](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EEE) for 2025-2026 with DepScheduled, Seats, Origin, Dest, Year, Month, Class fields (to identify airport pairs connected with a nonstop flight)
 
 ### Note About the Data
 
@@ -113,3 +113,5 @@ While more data is good for me to play around with, it's probably not good for m
 - ~~Allowing filtering the data by month to highlight seasonality.~~ (Implemented!)
 
 - ~~Showing the airport name upon hover of a bar.~~ (Implemented!)
+
+- Formatting the slider better (e.g. with the tooltip).

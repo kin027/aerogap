@@ -73,11 +73,11 @@ class UnservedMarketAnalyzer:
         # Drop NA values
         self.original_db1c_df = self.original_db1c_df.dropna()
 
-        # Filter down to year 2025
-        self.original_db1c_df = self.original_db1c_df[
-            (self.original_db1c_df["YEAR"] == 2025)
-            & (self.original_db1c_df["MONTH"] >= 7)
-        ]
+        # Create date filter
+        data_filter = ((self.original_db1c_df["YEAR"] == 2026) & (self.original_db1c_df["MONTH"] <= 3)) | ((self.original_db1c_df["YEAR"] == 2025) & (self.original_db1c_df["MONTH"] >= 7))
+
+        # Filter down data filter
+        self.original_db1c_df = self.original_db1c_df[data_filter]
 
     # Method to get and validate airport code from user
     def get_origin_airport(self):
