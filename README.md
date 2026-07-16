@@ -96,16 +96,16 @@ While more data is good for me to play around with, it's probably not good for m
 
 ## Limitations
 
-- You should probably be cautious with using solely this analysis to determine whether an airline should start new routes because the demand is just one piece of the network planning puzzle.
+- You should probably be cautious with using solely this analysis to determine whether an airline should start new routes because the demand is just one piece of the network planning puzzle
   - Other factors to consider include fares, seasonality, operational constraints, opportunity cost of sending the aircraft elsewhere, cannibalism of traffic on existing routes, etc.
 
-- Precise passenger counts are unknown, but are approximated by scaling a random 40% ticket sample because that's what the DB1C tables track.
+- Precise passenger counts are unknown, but are approximated by scaling a random 40% ticket sample because that's what the DB1C tables track
 
-- The data is not real time because the BTS releases the T-100 and DB1C tables with a three-month lag and in monthly increments.
-  - I also have to manually download the data from the links above.
+- The data is not real time because the BTS releases the T-100 and DB1C tables with a three-month lag and in monthly increments
+  - I also have to manually download the data from the links above
 
-- Routes with an airport outside the U.S. are excluded because the public DB1C tables include only domestic traffic.
-  - DB1C tables for international traffic exist but [must be requested from the government](https://www.bts.gov/topics/airlines-and-airports/restricted-data).
+- Routes with an airport outside the U.S. are excluded because the public DB1C tables include only domestic traffic
+  - DB1C tables for international traffic exist but [must be requested from the government](https://www.bts.gov/topics/airlines-and-airports/restricted-data)
 
 ## Future Improvement Plans
 
