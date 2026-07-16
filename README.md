@@ -6,17 +6,17 @@ A Python tool that analyzes 2025-2026 Bureau of Transportation Statistics (BTS) 
 
 ### Why I Built This
 
-I'm an avgeek (aviation enthusiast) and data nerd. While I love to take connecting flights even when nonstop service exists ([not too long ago I flew DFW to ABQ via... ORD](https://my.flightradar24.com/kin_on_a_plane)), I'm also aware that many passengers in the system are forced to connect simply because nonstop options don't exist.
+I'm an avgeek (aviation enthusiast) and data nerd. While I love to take connecting flights even when nonstop service exists ([I once flew DFW to ABQ via... ORD](https://my.flightradar24.com/kin_on_a_plane)), I'm also aware that many passengers in the system are forced to connect simply because nonstop options don't exist.
 
-This reality hits me every time I look around the cabin while munching on my obligatory [inflight fruit and cheese plate](https://news.alaskaair.com/alaska-airlines/most-popular-fruit-cheese-platters-national-cheese-day-2021/). I always wonder where the other passengers on my flights connect to or from, especially if a consistent stream of passengers on the same flight all want to reach the same unserved destination, but can't and instead are forced to take [_Tour de O'Hare_](https://www.reddit.com/r/unitedairlines/comments/1uup4bw/first_lap_of_the_ord_500_almost_complete_think_we/) while they connect in Chicago. To me, finding those gaps is true food for thought (although the Tillamook sharp cheddar is also pretty good).
+This reality hits me every time I look around the cabin while munching on my obligatory [inflight fruit and cheese plate](https://news.alaskaair.com/alaska-airlines/most-popular-fruit-cheese-platters-national-cheese-day-2021/). I always wonder where the other passengers on my flights connect to or from, especially if a consistent stream of passengers on the same flight all want to reach the same unserved destination, but can't and instead are forced to take [_Tour de O'Hare_](https://www.reddit.com/r/unitedairlines/comments/1uup4bw/first_lap_of_the_ord_500_almost_complete_think_we/) while they connect in Chicago. To me, finding those nonstop service gaps is true food for thought (although the Tillamook sharp cheddar is also pretty good).
 
 ### Key Insights
 
 The difference between a profitable airline and one facing bankruptcy could simply be in network planning. Unserved O&D (origin and destination) pairs may present significant market opportunities, especially if one end of the route is an airline hub.
 
-So, when I ran my analysis on my home airport of Portland (PDX), a rapidly expanding hub for Alaska Airlines, unlike some others for the airline (_cough cough_ SFO), some of the results didn't surprise me. For example, a top unserved market from PDX during certain months was New Orleans (MSY). However, in January 2025, [Alaska launched seasonal PDX-MSY service](https://news.alaskaair.com/loyalty/alaska-airlines-launches-seasonal-daily-flight-between-portland-and-new-orleans/), which ended in May of that year. As that seasonal flight returned in January 2026, MSY dropped off the chart in the same month. Similarly, Tampa (TPA) consistently sits as a top unserved market from Portland, except for November and December 2025, when Alaska runs seasonal flights between the two.
+So, when I ran my analysis on my home airport of Portland (PDX), a rapidly expanding hub for Alaska Airlines, unlike some others for the airline (_cough cough_ SFO), some of the results didn't surprise me. For example, a top unserved market from PDX during certain months was New Orleans (MSY). However, in January 2025, [Alaska launched seasonal PDX-MSY service that would last between January and May](https://news.alaskaair.com/loyalty/alaska-airlines-launches-seasonal-daily-flight-between-portland-and-new-orleans/). As a result, from the start of the data timeline (July 2025), MSY consistently stayed on the chart until January 2026, when Alaska restarted seasonal service. Similarly, Tampa (TPA) consistently sits as a top unserved market from Portland, except for November and December 2025, when Alaska ran seasonal flights linking the cities.
 
-Other results, however, surprised me. I didn't know that some of the top unserved markets from PDX at various times included Baltimore (BWI), Philadelphia (PHL), and St. Louis (STL). I'm guessing the network planners at Alaska knew about this too, because in May 2026, [the airline launched new nonstop service to all three airports](https://news.alaskaair.com/destinations/alaska-airlines-adds-13-new-routes/), so we can expect them to also drop off the chart once the data rolls in.
+Other results, however, surprised me. I didn't know that some of the top unserved markets from PDX at various times included Baltimore (BWI), Philadelphia (PHL), and St. Louis (STL). I'm guessing the network planners at Alaska knew about this too, because in May 2026, [the airline launched new nonstop service to all three airports](https://news.alaskaair.com/destinations/alaska-airlines-adds-13-new-routes/), so we can expect them to drop off the chart once the data rolls in.
 
 Of course, network planners evaluate factors beyond demand to justify new routes, but I just thought it was cool to see a major airline act on the same unserved markets that my analysis found. And it's also a great time to be a PDX-based Alaska flyer, of which I am one. (Did I mention those fruit and cheese plates?) ✈️
 
@@ -68,15 +68,15 @@ I downloaded data from the Bureau of Transportation Statistics (BTS), a part of 
 
 - [BTS Airline Origin and Destination Survey (DB1C) Market table](https://www.bts.gov/topics/airlines-and-airports/origin-and-destination-survey-data-market) for July 2025 to March 2026 (to get passenger flow data)
 
-- [BTS Air Carrier Statistics (Form 41 Traffic) T-100 Domestic Segment (All Carriers) table](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EEE) for 2025-2026 with DepScheduled, Seats, Origin, Dest, Year, Month, Class fields (to identify airport pairs connected with a nonstop flight)
+- [BTS Air Carrier Statistics (Form 41 Traffic) T-100 Domestic Segment (All Carriers) table](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EEE) for 2025-2026 with the DepScheduled, Seats, Origin, Dest, Year, Month, and Class fields (to identify airport pairs connected with a nonstop flight)
 
 ### Note About the Data
 
-When I first stumbled upon the Bureau of Transportation Statistics (BTS) DB1B data tables, I knew that I just needed to pair them with T-100 tables to identify those unserved markets. I tried to use data from 2025, the most recent full year since I started this, but the tables for the second half were nowhere to be found, so I had to settle for 2024 data.
+When I first stumbled upon the Bureau of Transportation Statistics (BTS) DB1B data tables, I knew that I just needed to pair them with T-100 tables to identify those unserved markets. I tried to use data from 2025, the most recent full year since I started this, but the tables for the second half of the year were nowhere to be found, so I had to settle for 2024 data.
 
 A bit of digging revealed that DB1B data for the second half of 2025 never existed to begin with. The Biden administration [overhauled airline reporting requirements in 2023](https://www.federalregister.gov/documents/2023/01/31/2022-28535/updates-to-the-origin-destination-survey-of-airline-passengers), and those upgrades went live in July 2025, replacing the DB1B with a newer, more robust table: the DB1C. The new data is so much more comprehensive that mixing it with the old data would skew the results, so I’m using data exclusively from July 2025 onward.
 
-While more data is good for me to play around with, it's probably not good for my machine. Each monthly file would be massive if I saved them as CSVs. Like 6 GB massive. With six months of data here, there was no way I was going to store 36 GB of CSVs on my disk. Luckily, the download link also included an option to save the data as parquets, reducing the total size of the DB1C tables down to 3 GB or 500 MB per monthly file. As that is _still_ too large for GitHub, I have a helper script, DB1C_merger.py, read from each file only seven of the [54](https://www.bts.gov/sites/bts.dot.gov/files/DB1C_Description_for_Market.pdf) (!) fields that I need and concatenate them into a final_db1c.csv, which is located in the root folder.
+While more data is good for me to play around with, it's probably not good for my machine. Each monthly file would be massive if I saved them as CSVs. Like 6 GB massive. With six months of data here, there was no way I was going to store 36 GB of CSVs on my disk. Luckily, the download link also included an option to save the data as parquets, reducing the total size of the DB1C tables down to 3 GB, or 500 MB per monthly file. As that is still too large for GitHub, I have a helper script, DB1C_merger.py, read from each file only seven of the [54](https://www.bts.gov/sites/bts.dot.gov/files/DB1C_Description_for_Market.pdf) (!) fields that I need and concatenate them into a final_db1c.csv, which is located in the root folder.
 
 ## Libraries Used
 
@@ -99,17 +99,20 @@ While more data is good for me to play around with, it's probably not good for m
 - You should probably be cautious with using solely this analysis to determine whether an airline should start new routes because the demand is just one piece of the network planning puzzle.
   - Other factors to consider include fares, seasonality, operational constraints, opportunity cost of sending the aircraft elsewhere, cannibalism of traffic on existing routes, etc.
 
-- Because the DB1C tables track a random 40% ticket sample, all counts are multiplied by 2.5 to approximate total market traffic.
+- Precise passenger counts are unknown, but are approximated by scaling a random 40% ticket sample because that's what the DB1C tables track.
+
+- The data is not real time because the BTS releases the T-100 and DB1C tables with a three-month lag and in monthly increments.
+  - I also have to manually download the data from the links above.
 
 - Routes with an airport outside the U.S. are excluded because the public DB1C tables include only domestic traffic.
   - DB1C tables for international traffic exist but [must be requested from the government](https://www.bts.gov/topics/airlines-and-airports/restricted-data).
 
 ## Future Improvement Plans
 
-- ~~Using more recent recent data.~~ (Implemented!)
+- ~~Using more recent recent data~~ (Implemented!)
 
-- ~~Allowing filtering the data by month to highlight seasonality.~~ (Implemented!)
+- ~~Allowing filtering the data by month to highlight seasonality~~ (Implemented!)
 
-- ~~Showing the airport name upon hover of a bar.~~ (Implemented!)
+- ~~Showing the airport name upon hover of a bar~~ (Implemented!)
 
-- Formatting the slider better (e.g. with the tooltip).
+- Formatting the slider better (e.g. with the tooltip)
