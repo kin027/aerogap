@@ -27,10 +27,6 @@ class UnservedMarketAnalyzer:
             airports_path, usecols=["name", "iata_code"]
         ).rename(columns={"iata_code": "DEST", "name": "DEST_CITY_NAME"})
 
-        # Tkinter window followed by withdrawal
-        self.window = Tk()
-        self.window.withdraw()
-
         # Attributes to be filled out in later methods
         self.origin_airport = None
         self.valid_origin_airports = None
@@ -41,6 +37,10 @@ class UnservedMarketAnalyzer:
         self.app = Dash(__name__)
         self.register_callbacks()
         self.timeline = []
+
+        # Tkinter window followed by withdrawal
+        self.window = Tk()
+        self.window.withdraw()
 
     # Method to clean the data
     def clean_data(self):
@@ -75,7 +75,10 @@ class UnservedMarketAnalyzer:
         self.original_db1c_df = self.original_db1c_df.dropna()
 
         # Drop same city market origin and destination, aka coterminals
-        self.original_db1c_df = self.original_db1c_df[self.original_db1c_df["OriginCityMarketID"] != self.original_db1c_df["DestCityMarketID"]]
+        self.original_db1c_df = self.original_db1c_df[
+            self.original_db1c_df["OriginCityMarketID"]
+            != self.original_db1c_df["DestCityMarketID"]
+        ]
 
         # Create date filter
         date_filter = (
@@ -91,6 +94,18 @@ class UnservedMarketAnalyzer:
 
         # Get a set of valid origin airport codes
         self.valid_origin_airports = set(self.original_db1c_df["ORIGIN"].unique())
+
+        # Create mew MONTH_NAME field for month name
+        self.original_db1c_df["MONTH_NAME"] = self.original_db1c_df["MONTH"].map(
+            lambda x: calendar.month_name[x]
+        )
+
+        # Set self.timeline
+        temp_df = self.original_db1c_df.drop_duplicates(subset=["YEAR", "MONTH"])
+        temp_df = temp_df.sort_values(by=["YEAR", "MONTH"], ascending=True)
+        self.timeline = [
+            (row.YEAR, row.MONTH, row.MONTH_NAME) for row in temp_df.itertuples()
+        ]
 
     # Method to get and validate airport code from user
     def get_origin_airport(self):
@@ -121,7 +136,7 @@ class UnservedMarketAnalyzer:
                     title=TITLE,
                 )
                 result = "INVALID"
-        else: # No response
+        else:  # No response
             result = "EXIT"
 
         return result
@@ -141,18 +156,6 @@ class UnservedMarketAnalyzer:
         ]
 
         # Create new columns in DB1C
-
-        # Create mew MONTH_NAME field for month name
-        self.copy_db1c_df["MONTH_NAME"] = self.copy_db1c_df["MONTH"].map(
-            lambda x: calendar.month_name[x]
-        )
-
-        # Set self.timeline
-        temp_df = self.copy_db1c_df.drop_duplicates(subset=["YEAR", "MONTH"])
-        temp_df = temp_df.sort_values(by=["YEAR", "MONTH"], ascending=True)
-        self.timeline = [
-            (row.YEAR, row.MONTH, row.MONTH_NAME) for row in temp_df.itertuples()
-        ]
 
         # Create new column that multiplies passenger counts by 2.5, as DB1C is a 40% sample of tickets
         self.copy_db1c_df["SCALED_PASSENGERS"] = self.copy_db1c_df["PASSENGERS"] * 2.5
@@ -278,6 +281,9 @@ class UnservedMarketAnalyzer:
         # Get year and month from timeline position
         target_year, target_month, target_month_name = self.timeline[slider_position]
 
+        # Set graph title
+        TITLE = f"Top Domestic Unserved Markets from {self.origin_airport} in {target_month_name} {target_year}"
+
         # Create temp_db1c_df, which is source of info for all tickets and is filtered by month and year
         temp_db1c_df = self.copy_db1c_df[
             (self.copy_db1c_df["YEAR"] == target_year)
@@ -296,74 +302,108 @@ class UnservedMarketAnalyzer:
         )
 
         # Filter to top 10 routes without nonstop flights
-        temp_db1c_df = temp_db1c_df[temp_db1c_df["HAS_NONSTOP_FLIGHT"] == False].head(10)
-
-        # Create graph
-        display_graph = px.bar(
-            temp_db1c_df,
-            x="DEST",
-            y="SCALED_PASSENGERS",
-            labels={
-                "DEST": "Destination Airport",
-                "SCALED_PASSENGERS": "Passengers (Scaled 40% Sample)",
-            },
-            title=f"Top Domestic Unserved Markets from {self.origin_airport} in {target_month_name} {target_year}",
-            hover_data=["DEST_CITY_NAME"],
-            color_discrete_sequence=[BAR_COLOR],
-            text="BAR_TEXT",
+        temp_db1c_df = temp_db1c_df[temp_db1c_df["HAS_NONSTOP_FLIGHT"] == False].head(
+            10
         )
 
-        # Update traces
-        display_graph.update_traces(
-            hovertemplate="%{customdata[0]}<extra></extra>",
-            textposition="inside",
-            textfont=dict(
-                family=TYPEFACE,
-                size=AXES_LABELS_FONT_SIZE,
-                color="#FFFFFF",  # Ensures readability inside colored bars
-            ),
-        )
+        # If temp_db1c_df has data:
+        if not temp_db1c_df.empty:
+            # Create graph
+            display_graph = px.bar(
+                temp_db1c_df,
+                x="DEST",
+                y="SCALED_PASSENGERS",
+                labels={
+                    "DEST": "Destination Airport",
+                    "SCALED_PASSENGERS": "Passengers (Scaled 40% Sample)",
+                },
+                title=TITLE,
+                hover_data=["DEST_CITY_NAME"],
+                color_discrete_sequence=[BAR_COLOR],
+                text="BAR_TEXT",
+            )
 
-        # Change general map layout
-        display_graph.update_layout(
-            margin_l=200,
-            plot_bgcolor="white",
-            font=dict(family=TYPEFACE, color=TITLE_COLOR),
-            title=dict(font=dict(size=TITLE_FONT_SIZE)),
-            xaxis=dict(
-                ticks="",
-                title=dict(
-                    font=dict(size=AXES_TITLE_FONT_SIZE),
-                    standoff=AXES_TITLE_FONT_SIZE * 2,
+            # Change hover label text formatting
+            display_graph.update_traces(
+                hovertemplate="%{customdata[0]}<extra></extra>",
+                textposition="inside",
+                textfont=dict(
+                    family=TYPEFACE,
+                    size=AXES_LABELS_FONT_SIZE,
+                    color="#FFFFFF",  # Ensures readability inside colored bars
                 ),
-                tickfont=dict(size=AXES_LABELS_FONT_SIZE),
-                showline=True,
-                linecolor=TITLE_COLOR,
-                linewidth=LINE_WIDTH,
-            ),
-            yaxis=dict(
-                title=dict(
-                    font=dict(size=AXES_TITLE_FONT_SIZE),
-                    standoff=AXES_TITLE_FONT_SIZE * 2,
+            )
+
+            # Change general graph layout
+            display_graph.update_layout(
+                margin_l=200,
+                plot_bgcolor="white",
+                font=dict(family=TYPEFACE, color=TITLE_COLOR),
+                title=dict(font=dict(size=TITLE_FONT_SIZE)),
+                xaxis=dict(
+                    ticks="",
+                    title=dict(
+                        font=dict(size=AXES_TITLE_FONT_SIZE),
+                        standoff=AXES_TITLE_FONT_SIZE * 2,
+                    ),
+                    tickfont=dict(size=AXES_LABELS_FONT_SIZE),
+                    showline=True,
+                    linecolor=TITLE_COLOR,
+                    linewidth=LINE_WIDTH,
                 ),
-                tickfont=dict(size=AXES_LABELS_FONT_SIZE),
-                ticks="outside",
-                tickcolor=TITLE_COLOR,
-                tickwidth=LINE_WIDTH,
-                showline=True,
-                linecolor=TITLE_COLOR,
-                linewidth=LINE_WIDTH,
-            ),
-            hovermode="closest",
-            hoverdistance=30,
-            hoverlabel=dict(
-                font=dict(
-                    size=HOVER_FONT_SIZE,
-                )
-            ),
-            transition_duration=200,
-            height=None,
-        )
+                yaxis=dict(
+                    title=dict(
+                        font=dict(size=AXES_TITLE_FONT_SIZE),
+                        standoff=AXES_TITLE_FONT_SIZE * 2,
+                    ),
+                    tickfont=dict(size=AXES_LABELS_FONT_SIZE),
+                    ticks="outside",
+                    tickcolor=TITLE_COLOR,
+                    tickwidth=LINE_WIDTH,
+                    showline=True,
+                    linecolor=TITLE_COLOR,
+                    linewidth=LINE_WIDTH,
+                ),
+                hovermode="closest",
+                hoverdistance=30,
+                hoverlabel=dict(
+                    font=dict(
+                        size=HOVER_FONT_SIZE,
+                    )
+                ),
+                transition_duration=200,
+                height=None,
+            )
+
+        else:  # No data, display message saying so instead
+            display_graph = px.scatter(title=TITLE)
+
+            display_graph.update_layout(
+                font=dict(family=TYPEFACE, color=TITLE_COLOR),
+                title=dict(font=dict(size=TITLE_FONT_SIZE)),
+                xaxis=dict(visible=False),
+                yaxis=dict(visible=False),
+                plot_bgcolor="#FFFFFF",
+                transition_duration=200,
+                annotations=[
+                    dict(
+                        text=f"No passengers from {self.origin_airport} connected to an onward flight during {target_month_name} {target_year}.<br><br>(This is common with airports served exclusively by a<br>budget airline that does not sell connecting itineraries.)",
+                        xref="paper",
+                        yref="paper",
+                        x=0.5,
+                        y=0.5,
+                        showarrow=False,
+                        font=dict(
+                            family=TYPEFACE,
+                            size=TITLE_FONT_SIZE,
+                            color=TITLE_COLOR,
+                        ),
+                        align="center",
+                        xanchor="center",
+                        yanchor="middle",
+                    )
+                ],
+            )
 
         return display_graph
 
