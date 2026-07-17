@@ -62,22 +62,6 @@ pip install -r requirements.txt
 python main.py
 ```
 
-## Data Sources
-
-I downloaded data from the Bureau of Transportation Statistics (BTS), a part of the U.S. Department of Transportation. Airlines report their traffic data to the BTS each month.
-
-- [BTS Airline Origin and Destination Survey (DB1C) Market table](https://www.bts.gov/topics/airlines-and-airports/origin-and-destination-survey-data-market) for July 2025 to March 2026 (to get passenger flow data)
-
-- [BTS Air Carrier Statistics (Form 41 Traffic) T-100 Domestic Segment (All Carriers) table](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EEE) for 2025-2026 with the DepScheduled, Seats, Origin, Dest, Year, Month, and Class fields (to identify airport pairs connected with a nonstop flight)
-
-### Note About the Data
-
-When I first stumbled upon the Bureau of Transportation Statistics (BTS) DB1B data tables, I knew that I just needed to pair them with T-100 tables to identify those unserved markets. I tried to use data from 2025, the most recent full year since I started this, but the tables for the second half of the year were nowhere to be found, so I had to settle for 2024 data.
-
-A bit of digging revealed that DB1B data for the second half of 2025 never existed to begin with. The Biden administration [overhauled airline reporting requirements in 2023](https://www.federalregister.gov/documents/2023/01/31/2022-28535/updates-to-the-origin-destination-survey-of-airline-passengers), and those upgrades went live in July 2025, replacing the DB1B with a newer, more robust table: the DB1C. The new data is so much more comprehensive that mixing it with the old data would skew the results, so I’m using data exclusively from July 2025 onward.
-
-While more data is good for me to play around with, it's probably not good for my machine. Each monthly file would be massive if I saved them as CSVs. Like 6 GB massive. With six months of data here, there was no way I was going to store 36 GB of CSVs on my disk. Luckily, the download link also included an option to save the data as parquets, reducing the total size of the DB1C tables down to 3 GB, or 500 MB per monthly file. As that is still too large for GitHub, I have a helper script, DB1C_merger.py, read from each file only seven of the [54](https://www.bts.gov/sites/bts.dot.gov/files/DB1C_Description_for_Market.pdf) (!) fields that I need and concatenate them into a final_db1c.csv, which is located in the root folder.
-
 ## Libraries Used
 
 - pandas (to analyze the T-100 and DB1C tables)
@@ -94,18 +78,43 @@ While more data is good for me to play around with, it's probably not good for m
 
 - threading (to allow concurrent execution)
 
+## Data Sources
+
+I downloaded data from the Bureau of Transportation Statistics (BTS), a part of the U.S. Department of Transportation. Airlines report their traffic data to the BTS each month.
+
+- [BTS Airline Origin and Destination Survey (DB1C) Market table](https://www.bts.gov/topics/airlines-and-airports/origin-and-destination-survey-data-market)
+  - Provides detailed ticket information from a 40% random sample of all U.S. domestic flown airline tickets (typically selected by ticket numbers ending in 0, 2, 7, or 9)
+  - Released monthly with a 75-day lag to ensure data quality
+  - I used data from July 2025 to March 2026
+
+- [BTS Air Carrier Statistics (Form 41 Traffic) T-100 Domestic Segment (All Carriers) table](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EEE)
+  - Identifies airport pairs connected with a nonstop flight
+  - Released monthly with a 2-3 month lag to ensure data quality
+  - I included the DepScheduled, Seats, Origin, Dest, Year, Month, and Class columns and used data from January 2025 to March 2026
+
+### Note About the Data
+
+When I first stumbled upon the Bureau of Transportation Statistics (BTS) DB1B data tables, I knew that I just needed to pair them with T-100 tables to identify those unserved markets. I tried to use data from 2025, the most recent full year since I started this, but the tables for the second half of the year were nowhere to be found, so I had to settle for 2024 data.
+
+A bit of digging revealed that DB1B data for the second half of 2025 never existed to begin with. The Biden administration [overhauled airline reporting requirements in 2023](https://www.federalregister.gov/documents/2023/01/31/2022-28535/updates-to-the-origin-destination-survey-of-airline-passengers), and those upgrades went live in July 2025, replacing the DB1B with a newer, more robust table: the DB1C. The new data is so much more comprehensive that mixing it with the old data would skew the results, so I’m using data exclusively from July 2025 onward.
+
+While more data is good for me to play around with, it's probably not good for my machine. Each monthly file would be massive if I saved them as CSVs. Like 6 GB massive. With six months of data here, there was no way I was going to store 36 GB of CSVs on my disk. Luckily, the download link also included an option to save the data as parquets, reducing the total size of the DB1C tables down to 3 GB, or 500 MB per monthly file. As that is still too large for GitHub, I have a helper script, DB1C_merger.py, read from each file only seven of the [54](https://www.bts.gov/sites/bts.dot.gov/files/DB1C_Description_for_Market.pdf) (!) fields that I need and concatenate them into a final_db1c.csv, which is located in the root folder.
+
 ## Limitations
 
-- You should probably be cautious with using solely this analysis to determine whether an airline should start new routes because the demand is just one piece of the network planning puzzle
+- Raw demand per se does not justify a new route 
+  - So you should be cautious with drawing network planning conclusions from this analysis
   - Other factors to consider include fares, seasonality, operational constraints, opportunity cost of sending the aircraft elsewhere, cannibalism of traffic on existing routes, etc.
 
-- Precise passenger counts are unknown, but are approximated by scaling a random 40% ticket sample because that's what the DB1C tables track
+- While the ticket sample size increased from the DB1B's 10% to the DB1C's 40%, passenger counts are still scaled approximations rather than precise figures
+  - So smaller regional routes have wider margins of error (though the increase in sample size was designed to mitigate this)
 
-- The data is not real time because the BTS releases the T-100 and DB1C tables with a three-month lag and in monthly increments
-  - I also have to manually download the data from the links above
+- The data is not real time
+  - So my analysis represents a historical snapshot as opposed to active booking trends
 
-- Routes with an airport outside the U.S. are excluded because the public DB1C tables include only domestic traffic
-  - DB1C tables for international traffic exist but [must be requested from the government](https://www.bts.gov/topics/airlines-and-airports/restricted-data)
+- The public DB1C tables include only U.S. domestic traffic
+  - So my analysis evaluates U.S. domestic traffic only
+  - The BTS has Airline Origin and Destination Survey data for U.S. international traffic, but considers it as restricted data, [meaning that it must be requested directly from them](https://www.bts.gov/topics/airlines-and-airports/restricted-data)
 
 ## Future Improvement Plans
 
