@@ -12,7 +12,7 @@ TITLE = "AeroGap"
 
 class UnservedMarketAnalyzer:
     def __init__(self, db1c_path, t100_path, airports_path):
-        # Set up DB1C and T-100 attributes
+        # Original data attributes
         self.original_db1c_df = pd.read_csv(db1c_path).rename(
             columns={
                 "SchFlYear": "YEAR",
@@ -33,6 +33,7 @@ class UnservedMarketAnalyzer:
 
         # Attributes to be filled out in later methods
         self.origin_airport = None
+        self.valid_origin_airports = None
         self.copy_t100_df = None
         self.copy_db1c_df = None
 
@@ -41,8 +42,8 @@ class UnservedMarketAnalyzer:
         self.register_callbacks()
         self.timeline = []
 
-    # Method to read all CSVs and perform basic data cleaning
-    def read_csvs(self):
+    # Method to clean the data
+    def clean_data(self):
         # First, clean T-100 table
 
         # Drop NA values
@@ -88,6 +89,9 @@ class UnservedMarketAnalyzer:
         # Drop rows not in date filter
         self.original_db1c_df = self.original_db1c_df[date_filter]
 
+        # Get a set of valid origin airport codes
+        self.valid_origin_airports = set(self.original_db1c_df["ORIGIN"].unique())
+
     # Method to get and validate airport code from user
     def get_origin_airport(self):
         result = None
@@ -103,11 +107,8 @@ class UnservedMarketAnalyzer:
             # Convert user input to uppercase
             origin_airport = origin_airport.upper()
 
-            # Get a set of valid origin airport codes
-            valid_origin_airports = set(self.original_db1c_df["ORIGIN"].unique())
-
             # Validate user-entered origin airport
-            if origin_airport in valid_origin_airports:  # Valid airport
+            if origin_airport in self.valid_origin_airports:  # Valid airport
                 # Set origin_airport attribute to result
                 self.origin_airport = origin_airport
 
@@ -383,8 +384,8 @@ class UnservedMarketAnalyzer:
 
     # Method to run all previous methods
     def run(self):
-        # Read CSVs
-        self.read_csvs()
+        # Clean the data
+        self.clean_data()
 
         result = None
 
