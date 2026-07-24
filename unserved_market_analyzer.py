@@ -155,6 +155,9 @@ class UnservedMarketAnalyzer:
             self.copy_db1c_df["ORIGIN"] == self.origin_airport
         ]
 
+        # Keep rows in T-100 where DEST is not the origin airport
+        self.copy_t100_df = self.copy_t100_df[self.copy_t100_df["DEST"] != self.origin_airport]
+
         # Create new columns in DB1C
 
         # Create new column that multiplies passenger counts by 2.5, as DB1C is a 40% sample of tickets
