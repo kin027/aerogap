@@ -14,9 +14,7 @@ This reality hits me every time I look around the cabin while munching on my obl
 
 The difference between a profitable airline and one facing bankruptcy could simply be in network planning. Unserved O&D (origin and destination) pairs may present significant market opportunities, especially if one end of the route is an airline hub.
 
-So, when I ran my analysis on my home airport of Portland (PDX), a rapidly expanding hub for Alaska Airlines, unlike some others for the airline (_cough cough_ SFO), some of the results didn't surprise me. For example, a top unserved market from PDX during certain months was New Orleans (MSY). However, in January 2025, [Alaska launched seasonal PDX-MSY service that would last between January and May](https://news.alaskaair.com/loyalty/alaska-airlines-launches-seasonal-daily-flight-between-portland-and-new-orleans/). As a result, from the start of the data timeline (July 2025), MSY consistently stayed on the chart until January 2026, when Alaska restarted seasonal service. Similarly, Tampa (TPA) consistently sits as a top unserved market from Portland, except for November and December 2025, when Alaska ran seasonal flights linking the cities.
-
-Other results, however, surprised me. I didn't know that some of the top unserved markets from PDX at various times included Baltimore (BWI), Philadelphia (PHL), and St. Louis (STL). I'm guessing the network planners at Alaska knew about this too, because in May 2026, [the airline launched new nonstop service to all three airports](https://news.alaskaair.com/destinations/alaska-airlines-adds-13-new-routes/), so we can expect them to drop off the chart once the data rolls in.
+So, when I ran my analysis on my home airport of Portland (PDX), a rapidly expanding hub for Alaska Airlines, unlike some others for the airline (_cough cough_ SFO), some of the results didn't surprise me. For example, three top unserved markets from PDX during certain months were Baltimore (BWI), Philadelphia (PHL), and St. Louis (STL). I'm guessing the network planners at Alaska knew about this too, because in May 2026, [the airline launched new nonstop service to all three airports](https://news.alaskaair.com/destinations/alaska-airlines-adds-13-new-routes/), so those three destinations fell off the graph in May.
 
 Of course, network planners evaluate factors beyond demand to justify new routes, but I just thought it was cool to see a major airline act on the same unserved markets that my analysis found. And it's also a great time to be a PDX-based Alaska flyer, of which I am one. (Did I mention those fruit and cheese plates?) ✈️
 
@@ -85,12 +83,12 @@ I downloaded data from the Bureau of Transportation Statistics (BTS), a part of 
 - [BTS Airline Origin and Destination Survey (DB1C) Market table](https://www.bts.gov/topics/airlines-and-airports/origin-and-destination-survey-data-market)
   - Provides detailed ticket information from a 40% random sample of all U.S. domestic flown airline tickets (typically selected by ticket numbers ending in 0, 2, 7, or 9)
   - Released monthly with a 75-day lag to ensure data quality
-  - I used data from July 2025 to March 2026
+  - I used data from July 2025 to May 2026
 
 - [BTS Air Carrier Statistics (Form 41 Traffic) T-100 Domestic Segment (All Carriers) table](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EEE)
   - Identifies airport pairs connected with a nonstop flight
   - Released monthly with a 2-3 month lag to ensure data quality
-  - I included the DepScheduled, Seats, Origin, Dest, Year, Month, and Class columns and used data from January 2025 to March 2026
+  - I included the DepScheduled, Seats, Origin, Dest, Year, Month, and Class columns and used data from January 2025 to May 2026
 
 ### Note About the Data
 
@@ -102,7 +100,7 @@ While more data is good for me to play around with, it's probably not good for m
 
 ## Limitations
 
-- Raw demand per se does not justify a new route 
+- Raw demand per se does not justify a new route
   - So you should be cautious with drawing network planning conclusions from this analysis
   - Other factors to consider include fares, seasonality, operational constraints, opportunity cost of sending the aircraft elsewhere, cannibalism of traffic on existing routes, etc.
 
@@ -117,8 +115,6 @@ While more data is good for me to play around with, it's probably not good for m
   - The BTS has Airline Origin and Destination Survey data for U.S. international traffic, but considers it as restricted data, [meaning that it must be requested directly from them](https://www.bts.gov/topics/airlines-and-airports/restricted-data)
 
 ## Future Improvement Plans
-
-- ~~Using more recent recent data~~ (Implemented!)
 
 - ~~Allowing filtering the data by month to highlight seasonality~~ (Implemented!)
 

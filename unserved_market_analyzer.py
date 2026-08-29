@@ -83,7 +83,7 @@ class UnservedMarketAnalyzer:
         # Create date filter
         date_filter = (
             (self.original_db1c_df["YEAR"] == 2026)
-            & (self.original_db1c_df["MONTH"] <= 3)
+            & (self.original_db1c_df["MONTH"] <= 5)
         ) | (
             (self.original_db1c_df["YEAR"] == 2025)
             & (self.original_db1c_df["MONTH"] >= 7)
