@@ -2,7 +2,7 @@
 
 ## Overview
 
-A Python tool that analyzes 2025-2026 Bureau of Transportation Statistics (BTS) data to identify unserved airline markets with high passenger demand.
+A Python tool that analyzes 2025-2026 Bureau of Transportation Statistics (BTS) data to identify top unserved airline O&D (origin & destination) markets with high passenger demand.
 
 ### Why I Built This
 
@@ -12,9 +12,9 @@ This reality hits me every time I look around the cabin while munching on my obl
 
 ### Key Insights
 
-The difference between a profitable airline and one facing bankruptcy could simply be in network planning. Unserved O&D (origin and destination) pairs may present significant market opportunities, especially if one end of the route is an airline hub.
+The difference between a profitable airline and one facing bankruptcy could simply be in network planning. Unserved O&D markets may present significant opportunities, especially if one end of the market is an airline hub.
 
-So, when I ran my analysis on my home airport of Portland (PDX), a rapidly expanding hub for Alaska Airlines, unlike some others for the airline (_cough cough_ SFO), some of the results didn't surprise me. For example, two of the top unserved markets from PDX during certain months were Philadelphia (PHL), and St. Louis (STL). Honestly, I was surprised that we didn't have a nonstop flight to those cities, but that is no longer the case. I'm guessing the network planners at Alaska knew about this too, because in May 2026, [the airline launched new nonstop service to Philly and St. Louis](https://news.alaskaair.com/destinations/alaska-airlines-adds-13-new-routes/), so those markets fell off the graph in May.
+When I ran my analysis on my home airport of Portland (PDX), a rapidly expanding hub for Alaska Airlines, unlike some others for the airline (_cough cough_ SFO), it revealed that two of the top unserved markets from Portland during certain months were Philadelphia (PHL), and St. Louis (STL). Honestly, I was surprised that we didn't have a nonstop flight to those cities, but that is no longer the case. I'm guessing the network planners at Alaska knew about this too, because in May 2026, [the airline launched new nonstop service to Philly and St. Louis](https://news.alaskaair.com/destinations/alaska-airlines-adds-13-new-routes/), so those markets fell off the graph in May.
 
 Of course, network planners evaluate factors beyond demand to justify new routes, but I just thought it was cool to see a major airline act on the same unserved markets that my analysis found. And it's also a great time to be a PDX-based Alaska flyer, of which I am one. (Did I mention those fruit and cheese plates?) ✈️
 

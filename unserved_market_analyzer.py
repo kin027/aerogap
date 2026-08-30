@@ -186,7 +186,7 @@ class UnservedMarketAnalyzer:
         target_year, target_month, target_month_name = self.timeline[slider_position]
 
         # Set graph title
-        GRAPH_TITLE = f"Top Domestic Unserved Markets from {self.origin_market_name} in {target_month_name} {target_year}"
+        GRAPH_TITLE = f"Top Domestic Unserved Airline O&D Markets from {self.origin_market_name} in {target_month_name} {target_year}"
 
         # Create temp_db1c_df, which is source of info for all tickets and is filtered by month and year
         temp_db1c_df = self.copy_db1c_df[
