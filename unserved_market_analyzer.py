@@ -19,13 +19,14 @@ class UnservedMarketAnalyzer:
                 "SchFlMonth": "MONTH",
                 "Origin": "ORIGIN",
                 "Dest": "DEST",
+                "DestState": "DEST_STATE",
                 "Passengers": "PASSENGERS",
             }
         )
         self.original_t100_df = pd.read_csv(t100_path)
         self.airports_df = pd.read_csv(
-            airports_path, usecols=["name", "iata_code"]
-        ).rename(columns={"iata_code": "DEST", "name": "DEST_CITY_NAME"})
+            airports_path, usecols=["municipality", "iata_code"]
+        ).rename(columns={"iata_code": "DEST", "municipality": "DEST_CITY_NAME"})
 
         # Attributes to be filled out in later methods
         self.origin_airport = None
@@ -91,6 +92,16 @@ class UnservedMarketAnalyzer:
 
         # Drop rows not in date filter
         self.original_db1c_df = self.original_db1c_df[date_filter]
+
+        # Merge city names into db1c
+        self.original_db1c_df = self.original_db1c_df.merge(
+            self.airports_df, on="DEST", how="left"
+        )
+
+        # Create new column for DEST_CITY_STATE (e.g. "Phoenix, AZ")
+        self.original_db1c_df["DEST_CITY_STATE"] = (
+                self.original_db1c_df["DEST_CITY_NAME"].fillna("Unknown") + ", " + self.original_db1c_df["DEST_STATE"].fillna("")
+        )
 
         # Get a set of valid origin airport codes
         self.valid_origin_airports = set(self.original_db1c_df["ORIGIN"].unique())
@@ -192,11 +203,6 @@ class UnservedMarketAnalyzer:
             + ")"
         )
 
-        # Merge city names into db1c
-        self.copy_db1c_df = self.copy_db1c_df.merge(
-            self.airports_df, on="DEST", how="left"
-        )
-
     # Method to construct and return layout tree
     def build_layout(self):
         return html.Div(
@@ -285,7 +291,7 @@ class UnservedMarketAnalyzer:
         target_year, target_month, target_month_name = self.timeline[slider_position]
 
         # Set graph title
-        TITLE = f"Top Domestic Unserved Markets from {self.origin_airport} in {target_month_name} {target_year}"
+        GRAPH_TITLE = f"Top Domestic Unserved Markets from {self.origin_airport} in {target_month_name} {target_year}"
 
         # Create temp_db1c_df, which is source of info for all tickets and is filtered by month and year
         temp_db1c_df = self.copy_db1c_df[
@@ -320,8 +326,8 @@ class UnservedMarketAnalyzer:
                     "DEST": "Destination Airport",
                     "SCALED_PASSENGERS": "Passengers (Scaled 40% Sample)",
                 },
-                title=TITLE,
-                hover_data=["DEST_CITY_NAME"],
+                title=GRAPH_TITLE,
+                hover_data=["DEST_CITY_STATE"],
                 color_discrete_sequence=[BAR_COLOR],
                 text="BAR_TEXT",
             )
