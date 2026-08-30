@@ -14,7 +14,7 @@ This reality hits me every time I look around the cabin while munching on my obl
 
 The difference between a profitable airline and one facing bankruptcy could simply be in network planning. Unserved O&D (origin and destination) pairs may present significant market opportunities, especially if one end of the route is an airline hub.
 
-So, when I ran my analysis on my home airport of Portland (PDX), a rapidly expanding hub for Alaska Airlines, unlike some others for the airline (_cough cough_ SFO), some of the results didn't surprise me. For example, three top unserved markets from PDX during certain months were Baltimore (BWI), Philadelphia (PHL), and St. Louis (STL). I'm guessing the network planners at Alaska knew about this too, because in May 2026, [the airline launched new nonstop service to all three airports](https://news.alaskaair.com/destinations/alaska-airlines-adds-13-new-routes/), so those three destinations fell off the graph in May.
+So, when I ran my analysis on my home airport of Portland (PDX), a rapidly expanding hub for Alaska Airlines, unlike some others for the airline (_cough cough_ SFO), some of the results didn't surprise me. For example, two of the top unserved markets from PDX during certain months were Philadelphia (PHL), and St. Louis (STL). Honestly, I was surprised that we didn't have a nonstop flight to those cities, but that is no longer the case. I'm guessing the network planners at Alaska knew about this too, because in May 2026, [the airline launched new nonstop service to Philly and St. Louis](https://news.alaskaair.com/destinations/alaska-airlines-adds-13-new-routes/), so those markets fell off the graph in May.
 
 Of course, network planners evaluate factors beyond demand to justify new routes, but I just thought it was cool to see a major airline act on the same unserved markets that my analysis found. And it's also a great time to be a PDX-based Alaska flyer, of which I am one. (Did I mention those fruit and cheese plates?) ✈️
 
@@ -72,8 +72,6 @@ python main.py
 
 - Tkinter (to create the GUI)
 
-- calendar (to convert the month number in each data table to its month name)
-
 - threading (to allow concurrent execution)
 
 ## Data Sources
@@ -88,7 +86,7 @@ I downloaded data from the Bureau of Transportation Statistics (BTS), a part of 
 - [BTS Air Carrier Statistics (Form 41 Traffic) T-100 Domestic Segment (All Carriers) table](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EEE)
   - Identifies airport pairs connected with a nonstop flight
   - Released monthly with a 2-3 month lag to ensure data quality
-  - I included the DepScheduled, Seats, Origin, Dest, Year, Month, and Class columns and used data from January 2025 to May 2026
+  - I included the DepScheduled, Seats, Origin, OriginCityMarketID, Dest, DestCityMarketID, Year, Month, and Class columns and used data from January 2025 to May 2026
 
 ### Note About the Data
 
