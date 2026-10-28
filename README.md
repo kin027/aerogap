@@ -90,7 +90,7 @@ While more data is good for me to play around with, it's probably not good for m
   - So smaller regional routes have wider margins of error (though the increase in sample size was designed to mitigate this)
 
 - The public DB1C tables include only domestic U.S. traffic
-  - So only domestic unserved markets are shown
+  - So international unserved markets are not considered
   - The BTS has Airline Origin and Destination Survey data for U.S. international traffic, but considers it as restricted data, [meaning that it must be requested directly from them](https://www.bts.gov/topics/airlines-and-airports/restricted-data)
 
 ## Future Improvement Plans
