@@ -89,8 +89,9 @@ While more data is good for me to play around with, it's probably not good for m
 - While the ticket sample size increased from the DB1B's 10% to the DB1C's 40%, passenger counts are still scaled approximations rather than precise figures
   - So smaller regional routes have wider margins of error (though the increase in sample size was designed to mitigate this)
 
-- The data is not real time
-  - So my analysis represents a historical snapshot as opposed to active booking trends
+- The public DB1C tables include only domestic U.S. traffic
+  - So only domestic unserved markets are shown
+  - The BTS has Airline Origin and Destination Survey data for U.S. international traffic, but considers it as restricted data, [meaning that it must be requested directly from them](https://www.bts.gov/topics/airlines-and-airports/restricted-data)
 
 ## Future Improvement Plans
 
