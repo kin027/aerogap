@@ -63,12 +63,12 @@ python main.py
 ## Data Sources
 
 - [BTS, Airline Origin and Destination Survey (DB1C), Market](https://www.bts.gov/topics/airlines-and-airports/origin-and-destination-survey-data-market)
-  - Contains a 40% sample of airline tickets from reporting carriers reporting origin, destination and other itinerary details of passengers transported
+  - Contains a 40% sample of airline tickets from reporting carriers detailing origin, destination and other itinerary details of passengers transported
   - Released monthly with a 75-day lag
   - I used data from July 2025 to May 2026
 
 - [BTS, Air Carrier Statistics (Form 41 Traffic), T-100 Domestic Segment (All Carriers)](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EEE)
-  - Contains domestic and international airline market and segment data
+  - Contains domestic airline segment data
   - Released monthly with a 2-3 month lag
   - I used data from July 2025 to May 2026
 
