@@ -1,8 +1,8 @@
-# AeroGap Analyzer
+# AeroGap
 
 ## Overview
 
-A Python tool that analyzes 2025-2026 Bureau of Transportation Statistics (BTS) data to identify top unserved airline O&D (origin & destination) markets with high passenger demand.
+A Python tool that analyzes 2025-2026 Bureau of Transportation Statistics (BTS) data to identify top unserved airline O&D (origin & destination) markets with high passenger demand within the U.S.
 
 ### Why I Built This
 
@@ -18,45 +18,31 @@ When I ran my analysis on my home airport of Portland (PDX), a rapidly expanding
 
 Of course, network planners evaluate factors beyond demand to justify new routes, but I just thought it was cool to see a major airline act on the same unserved markets that my analysis found. And it's also a great time to be a PDX-based Alaska flyer, of which I am one. (Did I mention those fruit and cheese plates?) ✈️
 
-**Try the AeroGap Analyzer out with your home airport to discover where people are going that airlines aren't!**
-
 ## Getting Started
 
-Make sure you have Python 3.13 or higher installed.
-
-1. Clone this repository:
+Have Python 3.13+ installed on your machine. You do not need to download any data, as I've already included the relevant data in this repo.
 
 ```bash
+# Clone the repo
 git clone https://github.com/kin027/aerogap.git
 cd aerogap
-```
 
-2. Create a virtual environment:
-
-```bash
-# Create the environment
+# Create the virtual environment
 python -m venv venv
 
-# Activate it:
-# On macOS and Linux:
+# Activate it on macOS and Linux
 source venv/bin/activate
 
-# On Windows (Command Prompt):
+# Activate it on Windows (Command Prompt)
 venv\Scripts\activate
 
-# On Windows (PowerShell):
+# Activate it on Windows (PowerShell)
 .\venv\Scripts\Activate.ps1
-```
 
-3. Install the dependencies (you don't need to download the data tables themselves as I've already included the final ones in the repo):
-
-```bash
+# Install dependencies
 pip install -r requirements.txt
-```
 
-4. Run the program!
-
-```bash
+# Run the program
 python main.py
 ```
 
@@ -64,7 +50,7 @@ python main.py
 
 - pandas (to analyze the T-100 and DB1C tables)
 
-- plotly (to design the graph)
+- Plotly (to design the graph)
 
 - dash (to make the graph interactive with the slider)
 
@@ -76,17 +62,15 @@ python main.py
 
 ## Data Sources
 
-I downloaded data from the Bureau of Transportation Statistics (BTS), a part of the U.S. Department of Transportation. Airlines report their traffic data to the BTS each month.
-
-- [BTS Airline Origin and Destination Survey (DB1C) Market table](https://www.bts.gov/topics/airlines-and-airports/origin-and-destination-survey-data-market)
-  - Provides detailed ticket information from a 40% random sample of all U.S. domestic flown airline tickets (typically selected by ticket numbers ending in 0, 2, 7, or 9)
-  - Released monthly with a 75-day lag to ensure data quality
+- [BTS Airline Origin and Destination Survey (DB1C), Market](https://www.bts.gov/topics/airlines-and-airports/origin-and-destination-survey-data-market)
+  - A 40% sample of airline tickets from reporting carriers reporting origin, destination and other itinerary details of passengers transported
+  - Released monthly with a 75-day lag
   - I used data from July 2025 to May 2026
 
-- [BTS Air Carrier Statistics (Form 41 Traffic) T-100 Domestic Segment (All Carriers) table](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EEE)
-  - Identifies airport pairs connected with a nonstop flight
-  - Released monthly with a 2-3 month lag to ensure data quality
-  - I included the DepScheduled, Seats, Origin, OriginCityMarketID, Dest, DestCityMarketID, Year, Month, and Class columns and used data from January 2025 to May 2026
+- [BTS Air Carrier Statistics (Form 41 Traffic), T-100 Domestic Segment (All Carriers)](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EEE)
+  - Contains domestic and international airline market and segment data
+  - Released monthly with a 2-3 month lag
+  - I used data from July 2025 to May 2026
 
 ### Note About the Data
 
@@ -107,10 +91,6 @@ While more data is good for me to play around with, it's probably not good for m
 
 - The data is not real time
   - So my analysis represents a historical snapshot as opposed to active booking trends
-
-- The public DB1C tables include only U.S. domestic traffic
-  - So my analysis evaluates U.S. domestic traffic only
-  - The BTS has Airline Origin and Destination Survey data for U.S. international traffic, but considers it as restricted data, [meaning that it must be requested directly from them](https://www.bts.gov/topics/airlines-and-airports/restricted-data)
 
 ## Future Improvement Plans
 
