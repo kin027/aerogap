@@ -26,12 +26,14 @@ class UnservedMarketAnalyzer:
         self.register_callbacks()
         self.timeline = []
 
-        # Tkinter window followed by withdrawal
-        self.window = Tk()
-        self.window.withdraw()
-
     # Method to get and validate airport code from user
     def get_origin_airport(self):
+        # Create base tkinter window
+        root = Tk()
+
+        # Immediately hide window
+        root.withdraw()
+
         # Ask user for airport code
         origin_airport = simpledialog.askstring(
             title=TITLE,
@@ -70,6 +72,9 @@ class UnservedMarketAnalyzer:
                 result = "INVALID"
         else:  # No response
             result = "EXIT"
+
+        # Destroy window immediately before returning
+        root.destroy()
 
         return result
 
@@ -344,6 +349,3 @@ class UnservedMarketAnalyzer:
 
                 # Show map
                 self.show_graph()
-
-        # Destroy Tkinter window
-        self.window.destroy()

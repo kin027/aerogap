@@ -65,12 +65,12 @@ python main.py
 - [BTS, Airline Origin and Destination Survey (DB1C), Market](https://www.bts.gov/topics/airlines-and-airports/origin-and-destination-survey-data-market)
   - Contains a 40% sample of airline tickets from reporting carriers detailing origin, destination and other itinerary details of passengers transported
   - Released monthly with a 75-day lag
-  - I used data from July 2025 to May 2026
+  - I used data from July 2025 to July 2026
 
 - [BTS, Air Carrier Statistics (Form 41 Traffic), T-100 Domestic Segment (All Carriers)](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=EEE)
   - Contains domestic airline segment data
   - Released monthly with a 2-3 month lag
-  - I used data from July 2025 to May 2026
+  - I used data from July 2025 to July 2026
 
 ### Note About the Data
 
@@ -98,5 +98,7 @@ While more data is good for me to play around with, it's probably not good for m
 - ~~Allowing filtering the data by month to highlight seasonality~~ (Implemented!)
 
 - ~~Showing the airport name upon hover of a bar~~ (Implemented!)
+
+- Including a visualization of how passengers routed to connect for each unserved market
 
 - Formatting the slider better (e.g. with the tooltip)

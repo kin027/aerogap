@@ -1,16 +1,12 @@
 from unserved_market_analyzer import UnservedMarketAnalyzer
 
-# Set global constants for paths of files
-DB1C_PATH = "final_db1c.csv"
-T100_PATH = "final_t100.csv"
-
-
 def main():
-    # Create data object
-    analyzer = UnservedMarketAnalyzer(DB1C_PATH, T100_PATH)
+    # Create analyzer object
+    analyzer = UnservedMarketAnalyzer(db1c_path="final_db1c.csv", t100_path="final_t100.csv")
 
     # Call analyzer run method
     analyzer.run()
 
 
-main()
+if __name__ == "__main__":
+    main()

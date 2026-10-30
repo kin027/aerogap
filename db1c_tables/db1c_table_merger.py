@@ -10,14 +10,15 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 file_pattern = os.path.join(script_dir, "*.parquet")
 file_list = glob.glob(file_pattern)
 
-target_column_list = ["SchFlYear", "SchFlMonth", "Origin", "OriginCityMarketID", "Dest", "DestCityMarketID", "Passengers"]
+target_column_list = ["SchFlYear", "SchFlMonth", "Origin", "OriginCityMarketID", "Dest", "DestCityMarketID",
+                      "Passengers", "MktAmount"]
 
-processed_chunks = []
-db1c_df = pd.DataFrame()
+# Hint that processed_chunks holds DataFrames
+processed_chunks: list[pd.DataFrame] = []
 
 # Process each parquet file individually
 for file in file_list:
-    df = pd.read_parquet(file, columns=target_column_list).rename(
+    monthly_db1c_df = pd.read_parquet(file, columns=target_column_list).rename(
             columns={
                 "SchFlYear": "YEAR",
                 "SchFlMonth": "MONTH",
@@ -26,28 +27,32 @@ for file in file_list:
                 "Dest": "DEST",
                 "DestCityMarketID": "DEST_MARKET_ID",
                 "Passengers": "PASSENGERS",
+                "MktAmount": "MKT_AMOUNT"
             }
     )
 
-    # CLEAN DATA
+    # Drop rows missing at least one value
+    monthly_db1c_df = monthly_db1c_df.dropna()
 
-    # Filter date range first (July 2025 to May 2026)
+    # Drop rows outside of date range
     date_filter = (
-            ((df["YEAR"] == 2026) & (df["MONTH"] <= 5)) |
-            ((df["YEAR"] == 2025) & (df["MONTH"] >= 7))
+            ((monthly_db1c_df["YEAR"] == 2026) & (monthly_db1c_df["MONTH"] <= 7)) |
+            ((monthly_db1c_df["YEAR"] == 2025) & (monthly_db1c_df["MONTH"] >= 7))
     )
-    df = df[date_filter]
+    monthly_db1c_df = monthly_db1c_df[date_filter]
 
     # Drop coterminals
-    df = df[df["ORIGIN_MARKET_ID"] != df["DEST_MARKET_ID"]]
+    monthly_db1c_df = monthly_db1c_df[monthly_db1c_df["ORIGIN_MARKET_ID"] != monthly_db1c_df["DEST_MARKET_ID"]]
+
+    # Convert all numeric columns to type int32
+    numeric_cols = monthly_db1c_df.select_dtypes(include="number").columns
+    monthly_db1c_df[numeric_cols] = monthly_db1c_df[numeric_cols].astype("int32")
 
     # Append each df into processed_chunks
-    processed_chunks.append(df)
+    processed_chunks.append(monthly_db1c_df)
 
-if processed_chunks:
-    db1c_df = pd.concat(processed_chunks, ignore_index=True)
-else:
-    db1c_df = pd.DataFrame(columns=target_column_list)
+# Concatenate chunks
+db1c_df = pd.concat(processed_chunks, ignore_index=True)
 
 # Sum up passenger counts for a market pair (doing this here or else the final file would be huge)
 db1c_df = db1c_df.groupby(["YEAR", "MONTH", "ORIGIN_MARKET_ID", "DEST_MARKET_ID"]).agg(
@@ -55,11 +60,6 @@ db1c_df = db1c_df.groupby(["YEAR", "MONTH", "ORIGIN_MARKET_ID", "DEST_MARKET_ID"
     ORIGIN_MARKET_AIRPORTS=("ORIGIN", lambda x: ", ".join(sorted(set(x)))),
     DEST_MARKET_AIRPORTS=("DEST", lambda x: ", ".join(sorted(set(x))))
 ).reset_index()
-
-# Drop NA values
-db1c_df = db1c_df.dropna()
-
-# CREATE NEW COLUMNS
 
 # Read market ID lookup CSV
 markets_df = pd.read_csv(os.path.join(script_dir, "..", "L_CITY_MARKET_ID.csv")).set_index("Code")["Description"]
@@ -82,16 +82,13 @@ db1c_df["DEST_MARKET_NAME"] = (
     .replace(to_replace=r" \(Metropolitan Area\)", value="", regex=True)
 )
 
-# Convert floats to int64 data type
-db1c_df[["YEAR", "MONTH"]] = db1c_df[["YEAR", "MONTH"]].astype("int64")
-
 # Create new MONTH_NAME column for month name
 db1c_df["MONTH_NAME"] = db1c_df["MONTH"].map(
     lambda x: calendar.month_name[x]
 )
 
 # Create new SCALED_PASSENGERS column that multiplies passenger counts by 2.5, as DB1C is a 40% sample of tickets
-db1c_df["SCALED_PASSENGERS"] = (db1c_df["PASSENGERS"] * 2.5).round()
+db1c_df["SCALED_PASSENGERS"] = (db1c_df["PASSENGERS"] * 2.5).round().astype("int32")
 
 # Get number of days in a month
 days_in_month = pd.to_datetime(
@@ -100,9 +97,6 @@ days_in_month = pd.to_datetime(
 
 # Create new PASSENGERS_DAILY column
 db1c_df["PASSENGERS_DAILY"] = (db1c_df["SCALED_PASSENGERS"] / days_in_month).round(2)
-
-# Convert floats to int64 data type
-db1c_df[["PASSENGERS", "SCALED_PASSENGERS", "ORIGIN_MARKET_ID", "DEST_MARKET_ID"]] = db1c_df[["PASSENGERS", "SCALED_PASSENGERS", "ORIGIN_MARKET_ID", "DEST_MARKET_ID"]].astype("int64")
 
 # Create new BAR_TEXT column
 db1c_df["BAR_TEXT"] = (
