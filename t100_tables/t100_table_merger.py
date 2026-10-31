@@ -32,7 +32,8 @@ for file in file_list:
     monthly_t100_df = monthly_t100_df[date_filter]
 
     # Drop coterminals
-    monthly_t100_df = monthly_t100_df[monthly_t100_df["ORIGIN_MARKET_ID"] != monthly_t100_df["DEST_MARKET_ID"]]
+    monthly_t100_df = monthly_t100_df[
+        monthly_t100_df["ORIGIN_MARKET_ID"] != monthly_t100_df["DEST_MARKET_ID"]]
 
     # Convert all numeric columns to type int32
     numeric_cols = monthly_t100_df.select_dtypes(include="number").columns
@@ -60,7 +61,8 @@ for file in file_list:
 t100_df = pd.concat(processed_chunks, ignore_index=True)
 
 # Keep only important columns
-t100_df = t100_df[["YEAR", "MONTH", "ORIGIN", "ORIGIN_MARKET_ID", "DEST", "DEST_MARKET_ID"]]
+t100_df = t100_df[
+    ["YEAR", "MONTH", "ORIGIN", "ORIGIN_MARKET_ID", "DEST", "DEST_MARKET_ID"]]
 
 # Drop duplicate rows
 t100_df = t100_df.drop_duplicates(subset=["YEAR", "MONTH", "ORIGIN", "DEST"])

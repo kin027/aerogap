@@ -10,7 +10,8 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 file_pattern = os.path.join(script_dir, "*.parquet")
 file_list = glob.glob(file_pattern)
 
-target_column_list = ["SchFlYear", "SchFlMonth", "Origin", "OriginCityMarketID", "Dest", "DestCityMarketID",
+target_column_list = ["SchFlYear", "SchFlMonth", "Origin", "OriginCityMarketID", "Dest",
+                      "DestCityMarketID",
                       "Passengers", "MktAmount"]
 
 # Hint that processed_chunks holds DataFrames
@@ -19,16 +20,16 @@ processed_chunks: list[pd.DataFrame] = []
 # Process each parquet file individually
 for file in file_list:
     monthly_db1c_df = pd.read_parquet(file, columns=target_column_list).rename(
-            columns={
-                "SchFlYear": "YEAR",
-                "SchFlMonth": "MONTH",
-                "Origin": "ORIGIN",
-                "OriginCityMarketID": "ORIGIN_MARKET_ID",
-                "Dest": "DEST",
-                "DestCityMarketID": "DEST_MARKET_ID",
-                "Passengers": "PASSENGERS",
-                "MktAmount": "MKT_AMOUNT"
-            }
+        columns={
+            "SchFlYear": "YEAR",
+            "SchFlMonth": "MONTH",
+            "Origin": "ORIGIN",
+            "OriginCityMarketID": "ORIGIN_MARKET_ID",
+            "Dest": "DEST",
+            "DestCityMarketID": "DEST_MARKET_ID",
+            "Passengers": "PASSENGERS",
+            "MktAmount": "MKT_AMOUNT"
+        }
     )
 
     # Drop rows missing at least one value
@@ -42,7 +43,8 @@ for file in file_list:
     monthly_db1c_df = monthly_db1c_df[date_filter]
 
     # Drop coterminals
-    monthly_db1c_df = monthly_db1c_df[monthly_db1c_df["ORIGIN_MARKET_ID"] != monthly_db1c_df["DEST_MARKET_ID"]]
+    monthly_db1c_df = monthly_db1c_df[
+        monthly_db1c_df["ORIGIN_MARKET_ID"] != monthly_db1c_df["DEST_MARKET_ID"]]
 
     # Convert all numeric columns to type int32
     numeric_cols = monthly_db1c_df.select_dtypes(include="number").columns
@@ -54,7 +56,8 @@ for file in file_list:
 # Concatenate chunks
 db1c_df = pd.concat(processed_chunks, ignore_index=True)
 
-# Sum up passenger counts for a market pair (doing this here or else the final file would be huge)
+# Sum up passenger counts for a market pair (doing this here or else the final file
+# would be huge)
 db1c_df = db1c_df.groupby(["YEAR", "MONTH", "ORIGIN_MARKET_ID", "DEST_MARKET_ID"]).agg(
     PASSENGERS=("PASSENGERS", "sum"),
     ORIGIN_MARKET_AIRPORTS=("ORIGIN", lambda x: ", ".join(sorted(set(x)))),
@@ -62,7 +65,10 @@ db1c_df = db1c_df.groupby(["YEAR", "MONTH", "ORIGIN_MARKET_ID", "DEST_MARKET_ID"
 ).reset_index()
 
 # Read market ID lookup CSV
-markets_df = pd.read_csv(os.path.join(script_dir, "..", "L_CITY_MARKET_ID.csv")).set_index("Code")["Description"]
+markets_df = \
+    pd.read_csv(os.path.join(script_dir, "..", "L_CITY_MARKET_ID.csv")).set_index(
+        "Code")[
+        "Description"]
 
 # Create new ORIGIN_MARKET_NAME column
 db1c_df["ORIGIN_MARKET_NAME"] = (
@@ -87,7 +93,8 @@ db1c_df["MONTH_NAME"] = db1c_df["MONTH"].map(
     lambda x: calendar.month_name[x]
 )
 
-# Create new SCALED_PASSENGERS column that multiplies passenger counts by 2.5, as DB1C is a 40% sample of tickets
+# Create new SCALED_PASSENGERS column that multiplies passenger counts by 2.5,
+# as DB1C is a 40% sample of tickets
 db1c_df["SCALED_PASSENGERS"] = (db1c_df["PASSENGERS"] * 2.5).round().astype("int32")
 
 # Get number of days in a month
@@ -100,11 +107,11 @@ db1c_df["PASSENGERS_DAILY"] = (db1c_df["SCALED_PASSENGERS"] / days_in_month).rou
 
 # Create new BAR_TEXT column
 db1c_df["BAR_TEXT"] = (
-            db1c_df["SCALED_PASSENGERS"].astype(str)
-            + "<br>("
-            + db1c_df["PASSENGERS_DAILY"].astype(str)
-            + ")"
-        )
+        db1c_df["SCALED_PASSENGERS"].astype(str)
+        + "<br>("
+        + db1c_df["PASSENGERS_DAILY"].astype(str)
+        + ")"
+)
 
 # Sort by passenger counts
 db1c_df = db1c_df.sort_values(

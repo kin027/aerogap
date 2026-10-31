@@ -38,7 +38,7 @@ class UnservedMarketAnalyzer:
         origin_airport = simpledialog.askstring(
             title=TITLE,
             prompt="Enter a three-character IATA airport code\n"
-            "for an airport in the U.S.:",
+                   "for an airport in the U.S.:",
         )
 
         if origin_airport:
@@ -65,8 +65,8 @@ class UnservedMarketAnalyzer:
             else:  # Invalid airport
                 # Display message box for error message
                 messagebox.showerror(
-                    message="Airport is nonexistent, does not have scheduled commercial passenger "
-                    "air service, or is not in the U.S.",
+                    message="Airport is nonexistent, does not have scheduled "
+                            "commercial passenger air service, or is not in the U.S.",
                     title=TITLE,
                 )
                 result = "INVALID"
@@ -94,13 +94,14 @@ class UnservedMarketAnalyzer:
         # Filter both dfs to rows where ORIGIN is same as user input
         self.copy_t100_df = self.copy_t100_df[
             self.copy_t100_df["ORIGIN_MARKET_ID"] == self.origin_market_id
-        ]
+            ]
         self.copy_db1c_df = self.copy_db1c_df[
             self.copy_db1c_df["ORIGIN_MARKET_ID"] == self.origin_market_id
-        ]
+            ]
 
         # Keep rows in T-100 where DEST_MARKET_ID is not origin_market_id
-        self.copy_t100_df = self.copy_t100_df[self.copy_t100_df["DEST_MARKET_ID"] != self.origin_market_id]
+        self.copy_t100_df = self.copy_t100_df[
+            self.copy_t100_df["DEST_MARKET_ID"] != self.origin_market_id]
 
     # Method to construct and return layout tree
     def build_layout(self):
@@ -154,7 +155,9 @@ class UnservedMarketAnalyzer:
                     children=[
                         "Source: Bureau of Transportation Statistics (BTS).",
                         html.Br(),
-                        "Below each monthly passenger count in parentheses is the average daily passenger count. An Embraer E175LR typically seats 76 passengers.",
+                        "Below each monthly passenger count in parentheses is the "
+                        "average daily passenger count. An Embraer E175LR typically "
+                        "seats 76 passengers.",
                     ],
                     style={
                         "fontSize": "18px",
@@ -191,21 +194,28 @@ class UnservedMarketAnalyzer:
         target_year, target_month, target_month_name = self.timeline[slider_position]
 
         # Set graph title
-        GRAPH_TITLE = f"Top Domestic Unserved Airline O&D Markets from {self.origin_market_name} in {target_month_name} {target_year}"
+        GRAPH_TITLE = (
+            f"Top Domestic Unserved Airline O&D Markets from "
+            f"{self.origin_market_name} in "
+            f"{target_month_name} {target_year}")
 
-        # Create temp_db1c_df, which is source of info for all tickets and is filtered by month and year
+        # Create temp_db1c_df, which is source of info for all tickets and is
+        # filtered by month and year
         temp_db1c_df = self.copy_db1c_df[
             (self.copy_db1c_df["YEAR"] == target_year)
             & (self.copy_db1c_df["MONTH"] == target_month)
-        ]
+            ]
 
-        # Create temp_t100_df, which is source of info for all routes and is filtered by month and year
+        # Create temp_t100_df, which is source of info for all routes and is filtered
+        # by month and year
         temp_t100_df = self.copy_t100_df[
             (self.copy_t100_df["YEAR"] == target_year)
             & (self.copy_t100_df["MONTH"] == target_month)
-        ]
+            ]
 
-        # Create new column of boolean values that indicates whether a route has a nonstop flight by cross-checking with t100_df, which indicates whether a nonstop flight exists
+        # Create new column of boolean values that indicates whether a route has a
+        # nonstop flight by
+        # cross-checking with t100_df, which indicates whether a nonstop flight exists
         temp_db1c_df["HAS_NONSTOP_FLIGHT"] = temp_db1c_df["DEST_MARKET_ID"].isin(
             temp_t100_df["DEST_MARKET_ID"]
         )
@@ -296,7 +306,11 @@ class UnservedMarketAnalyzer:
                 transition_duration=200,
                 annotations=[
                     dict(
-                        text=f"No passengers from {self.origin_market_name} connected to an onward flight during {target_month_name} {target_year}.<br><br>(This is common with airports served exclusively by a<br>budget airline that does not sell connecting itineraries.)",
+                        text=f"No passengers from {self.origin_market_name} connected "
+                             f"to an onward flight during {target_month_name} "
+                             f"{target_year}.<br><br>(This is common with airports "
+                             f"served exclusively by a<br>budget airline that does "
+                             f"not sell connecting itineraries.)",
                         xref="paper",
                         yref="paper",
                         x=0.5,
